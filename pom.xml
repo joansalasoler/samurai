@@ -47,6 +47,16 @@
     <project.name>Samurai Framework</project.name>
   </properties>
 
+  <!-- Package distribution ============================================= -->
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/joansalasoler/samurai</url>
+    </repository>
+  </distributionManagement>
+
   <!-- Build configuration ============================================== -->
 
   <build>
