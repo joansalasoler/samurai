@@ -1,7 +1,7 @@
 package com.joansala.util.hash;
 
 /*
- * Aalina oware engine.
+ * Samurai framework.
  * Copyright (c) 2021 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify

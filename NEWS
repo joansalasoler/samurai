@@ -1,4 +1,4 @@
-News of Aalina
+News of Samurai
 
   Copyright (c) 2014-2021 Joan Sala Soler
 
@@ -6,16 +6,5 @@ News of Aalina
   are permitted in any medium without royalty provided the copyright
   notice and this notice are preserved.
 
-Version 1.2.1 (7 Apr 2021) (Joan Sala Soler)
-  Fixes the command line interface.
-
-Version 1.2.0 (23 Mar 2021) (Joan Sala Soler)
-  Engine optimization and new endgames book.
-
-Version 1.1.0 (01 Sep 2020) (Joan Sala Soler)
-  Improvements on the cache and the displayed engine reports.
-
-Version 1.0.0 (01 Aug 2014) (Joan Sala Soler)
-  Initial release of the game engine. Aalina is a strong oware abapa playing
-  program. It communicates with a Graphical User Interface through an adapted
-  version of the Universal Chess Interface protocol.
+Version 1.0.0 (07 Dec 2021) (Joan Sala Soler)
+  Initial release of the framework.

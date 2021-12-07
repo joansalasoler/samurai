@@ -31,7 +31,7 @@ import java.util.TreeSet;
 public class BookWriter implements Closeable {
 
     /** Book format signature */
-    private String signature = "Aalina Book 1.0";
+    private String signature = "Samurai Book 1.0";
 
     /** Additional book information */
     private Map<String, String> headers;

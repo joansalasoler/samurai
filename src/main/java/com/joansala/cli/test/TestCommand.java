@@ -1,7 +1,7 @@
 package com.joansala.cli.test;
 
 /*
- * Aalina oware engine.
+ * Samurai framework.
  * Copyright (C) 2021 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
