@@ -116,11 +116,11 @@ public class MatchCommand implements Callable<Integer> {
             player.startNewGame();
             player.setDepth(depth);
             player.setMoveTime(moveTime);
+            board = game.toBoard();
 
             printWelcome(writer);
             printBoard(writer);
 
-            board = game.toBoard();
             turn = askForTurn(reader);
 
             while (player.isRunning() && !game.hasEnded()) {
