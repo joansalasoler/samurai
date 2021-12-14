@@ -113,7 +113,7 @@ public class BinomialHash implements HashFunction {
      * @return          Population count
      */
     public static long offset(int count, int length) {
-        return binomial(count + length, length);
+        return binomial(count + length - 1, length - 1);
     }
 
 
