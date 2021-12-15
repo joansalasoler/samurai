@@ -1,8 +1,9 @@
-package com.joansala.engine.negamax;
+package com.joansala.test.engine.negamax;
 
 import org.junit.jupiter.api.*;
 import com.joansala.engine.Engine;
-import com.joansala.engine.EngineContract;
+import com.joansala.engine.negamax.Negamax;
+import com.joansala.test.engine.EngineContract;
 
 
 @DisplayName("Negamax engine")
