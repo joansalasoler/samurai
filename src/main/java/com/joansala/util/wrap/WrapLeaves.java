@@ -1,4 +1,4 @@
-package com.joansala.util.bench;
+package com.joansala.util.wrap;
 
 /*
  * Copyright (c) 2021 Joan Sala Soler <contact@joansala.com>
@@ -17,31 +17,47 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.joansala.engine.Cache;
 import com.joansala.engine.Game;
-import com.joansala.util.wrap.WrapCache;
+import com.joansala.engine.Leaves;
 
 
 /**
- * A decorated cache that accumulates statistics.
+ * A decorated endgames book.
  */
-public final class BenchCache extends WrapCache {
+public class WrapLeaves implements Leaves<Game> {
 
-    /** Statistics accumulator */
-    private BenchStats stats;
+    /** Decorated leaves instance */
+    protected Leaves<Game> leaves;
 
 
     /**
-     * Decorates a cache object.
+     * Decorates an engames book object.
      */
-    public BenchCache(BenchStats stats, Cache<Game> cache) {
-        super(cache);
-        this.stats = stats;
+    public WrapLeaves(Leaves<Game> leaves) {
+        this.leaves = leaves;
+    }
+
+
+    /** {@inheritDoc} */
+    public Leaves<Game> cast() {
+        return leaves;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override public int getFlag() {
+        return leaves.getFlag();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override public int getScore() {
+        return leaves.getScore();
     }
 
 
     /** {@inheritDoc} */
     @Override public boolean find(Game game) {
-        return stats.cache.test(cache.find(game.cast()));
+        return leaves.find(game.cast());
     }
 }
