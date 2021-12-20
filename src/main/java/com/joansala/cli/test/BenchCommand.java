@@ -223,16 +223,16 @@ public class BenchCommand implements Callable<Integer> {
      * @param game      Game instance
      */
     private void benchmark(Engine engine, Game game) {
-        long start = stats.watch.elapsed();
+        long start = stats.watch().elapsed();
 
-        stats.depth.offset(game.length());
-        stats.moves.increment();
-        stats.watch.start();
+        stats.depth().offset(game.length());
+        stats.moves().increment();
+        stats.watch().start();
         engine.computeBestMove(game);
-        stats.watch.stop();
+        stats.watch().stop();
 
-        long elapsed = stats.watch.elapsed() - start;
-        stats.movetime.aggregate(elapsed);
+        long elapsed = stats.watch().elapsed() - start;
+        stats.movetime().aggregate(elapsed);
     }
 
 
@@ -301,15 +301,15 @@ public class BenchCommand implements Callable<Integer> {
             "Endgames book hit ratio:  %,28.2f %%%n",
             horizontalRule('-'),
             stats.branchingFactor(),
-            stats.depth.average(),
-            stats.movetime.average(),
-            stats.movetime.maximum(),
+            stats.depth().average(),
+            stats.movetime().average(),
+            stats.movetime().maximum(),
             stats.visitsPerSecond(),
-            stats.visits.count(),
-            stats.heuristic.count(),
-            stats.terminal.count(),
-            stats.cache.percentage(),
-            stats.leaves.percentage()
+            stats.visits().count(),
+            stats.heuristic().count(),
+            stats.terminal().count(),
+            stats.cache().percentage(),
+            stats.leaves().percentage()
         );
     }
 

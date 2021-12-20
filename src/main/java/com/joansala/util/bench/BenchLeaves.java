@@ -42,6 +42,6 @@ public final class BenchLeaves extends WrapLeaves {
 
     /** {@inheritDoc} */
     @Override public boolean find(Game game) {
-        return stats.leaves.test(leaves.find(game.cast()));
+        return stats.leaves().test(leaves.find(game.cast()));
     }
 }

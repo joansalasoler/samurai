@@ -148,8 +148,8 @@ public class PerftCommand implements Callable<Integer> {
         final int cursor = game.getCursor();
 
         for (int depth = minDepth; depth <= maxDepth; depth++) {
-            stats.watch.reset();
-            stats.visits.clear();
+            stats.watch().reset();
+            stats.visits().clear();
             if (benchmark(game, depth) == 0L) break;
             System.out.format("%s%n", formatResults());
             game.setCursor(cursor);
@@ -166,13 +166,13 @@ public class PerftCommand implements Callable<Integer> {
      * @param game      Game instance
      */
     private long benchmark(Game game, int depth) {
-        stats.terminal.clear();
-        stats.depth.clear();
-        stats.depth.aggregate(depth);
-        stats.watch.start();
+        stats.terminal().clear();
+        stats.depth().clear();
+        stats.depth().aggregate(depth);
+        stats.watch().start();
         expand(game, depth);
-        stats.watch.stop();
-        return stats.terminal.count();
+        stats.watch().stop();
+        return stats.terminal().count();
     }
 
 
@@ -183,13 +183,13 @@ public class PerftCommand implements Callable<Integer> {
         boolean endgame = game.hasEnded();
 
         if (depth == 0) {
-            stats.terminal.test(endgame);
+            stats.terminal().test(endgame);
         } else if (endgame == false) {
             int move = NULL_MOVE;
 
             while ((move = game.nextMove()) != NULL_MOVE) {
                 game.makeMove(move);
-                stats.visits.increment();
+                stats.visits().increment();
                 expand(game, depth - 1);
                 game.unmakeMove();
             }
@@ -223,9 +223,9 @@ public class PerftCommand implements Callable<Integer> {
     private String formatResults() {
         return String.format(
             "%,5.0f %,24d %,18d %,10.2f",
-            stats.depth.average(),
-            stats.terminal.count(),
-            stats.terminal.success(),
+            stats.depth().average(),
+            stats.terminal().count(),
+            stats.terminal().success(),
             stats.visitsPerSecond() / 1000.0D
         );
     }
@@ -255,7 +255,7 @@ public class PerftCommand implements Callable<Integer> {
             "Node visits count:          %,26d nodes%n",
             horizontalRule('-'),
             stats.visitsPerSecond(),
-            stats.visits.count()
+            stats.visits().count()
         );
     }
 

@@ -41,23 +41,23 @@ public final class BenchGame extends WrapGame {
 
     /** {@inheritDoc} */
     @Override public void makeMove(int move) {
-        stats.visits.increment();
+        stats.visits().increment();
         game.makeMove(move);
     }
 
 
     /** {@inheritDoc} */
     @Override public int score() {
-        stats.heuristic.increment();
-        stats.depth.aggregate(game.length());
+        stats.heuristic().increment();
+        stats.depth().aggregate(game.length());
         return game.score();
     }
 
 
     /** {@inheritDoc} */
     @Override public int outcome() {
-        stats.terminal.increment();
-        stats.depth.aggregate(game.length());
+        stats.terminal().increment();
+        stats.depth().aggregate(game.length());
         return game.outcome();
     }
 }

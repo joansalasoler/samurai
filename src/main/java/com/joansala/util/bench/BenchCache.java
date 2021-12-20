@@ -42,6 +42,6 @@ public final class BenchCache extends WrapCache {
 
     /** {@inheritDoc} */
     @Override public boolean find(Game game) {
-        return stats.cache.test(cache.find(game.cast()));
+        return stats.cache().test(cache.find(game.cast()));
     }
 }
