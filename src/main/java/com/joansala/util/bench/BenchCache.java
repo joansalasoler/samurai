@@ -17,6 +17,7 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Inject;
 import com.joansala.engine.Cache;
 import com.joansala.engine.Game;
 import com.joansala.util.wrap.WrapCache;
@@ -34,7 +35,9 @@ public final class BenchCache extends WrapCache {
     /**
      * Decorates a cache object.
      */
-    public BenchCache(BenchStats stats, Cache<Game> cache) {
+    @Inject
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public BenchCache(BenchStats stats, Cache cache) {
         super(cache);
         this.stats = stats;
     }

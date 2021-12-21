@@ -17,6 +17,7 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Inject;
 import com.joansala.engine.Game;
 import com.joansala.util.wrap.WrapGame;
 
@@ -33,6 +34,7 @@ public final class BenchGame extends WrapGame {
     /**
      * Decorates a game object.
      */
+    @Inject
     public BenchGame(BenchStats stats, Game game) {
         super(game);
         this.stats = stats;

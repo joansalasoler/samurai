@@ -17,12 +17,14 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Singleton;
 import com.joansala.util.StopWatch;
 
 
 /**
  * Utility class to accumulate statistics.
  */
+@Singleton
 public final class BenchStats {
 
     /** Elapsed time stop-watch */

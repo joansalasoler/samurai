@@ -26,7 +26,6 @@ import java.util.concurrent.Callable;
 import java.util.StringJoiner;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.ConfigurationException;
 import picocli.CommandLine.*;
 
 import com.joansala.engine.*;
@@ -86,12 +85,12 @@ public class BenchCommand implements Callable<Integer> {
      * Creates a new service.
      */
     @Inject public BenchCommand(Injector injector) {
-        this.stats = new BenchStats();
-        this.game = createGame(stats, injector);
-        this.cache = createCache(stats, injector);
-        this.leaves = createLeaves(stats, injector);
-        this.parser = injector.getInstance(Board.class);
-        this.engine = injector.getInstance(Engine.class);
+        stats = injector.getInstance(BenchStats.class);
+        game = injector.getInstance(BenchGame.class);
+        leaves = injector.getInstance(BenchLeaves.class);
+        cache = injector.getInstance(BenchCache.class);
+        parser = injector.getInstance(Board.class);
+        engine = injector.getInstance(Engine.class);
     }
 
 
@@ -164,54 +163,6 @@ public class BenchCommand implements Callable<Integer> {
         if (engine instanceof HasLeaves) {
             ((HasLeaves) engine).setLeaves(leaves);
         }
-    }
-
-
-    /**
-     * Decorated game that accumulates statistics.
-     *
-     * @param stats     Statistics accumulator
-     * @param inject    Class injector
-     * @return          Decorated game
-     */
-    private BenchGame createGame(BenchStats stats, Injector injector) {
-        return new BenchGame(stats, injector.getInstance(Game.class));
-    }
-
-
-    /**
-     * Decorated cache that accumulates statistics.
-     *
-     * @param stats     Statistics accumulator
-     * @param inject    Class injector
-     * @return          Decorated cache or {@code null}
-     */
-    @SuppressWarnings("unchecked")
-    private BenchCache createCache(BenchStats stats, Injector injector) {
-        try {
-            Cache<Game> cache = injector.getInstance(Cache.class);
-            return new BenchCache(stats, cache);
-        } catch (ConfigurationException e) {}
-
-        return null;
-    }
-
-
-    /**
-     * Decorated leaves that accumulates statistics or {@code null}.
-     *
-     * @param stats     Statistics accumulator
-     * @param inject    Class injector
-     * @return          Decorated leaves or {@code null}
-     */
-    @SuppressWarnings("unchecked")
-    private BenchLeaves createLeaves(BenchStats stats, Injector injector) {
-        try {
-            Leaves<Game> leaves = injector.getInstance(Leaves.class);
-            return new BenchLeaves(stats, leaves);
-        } catch (ConfigurationException e) {}
-
-        return null;
     }
 
 
