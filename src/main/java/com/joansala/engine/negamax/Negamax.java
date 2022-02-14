@@ -288,9 +288,9 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
 
             if (depth > MIN_DEPTH) {
                 if (bestMove != lastMove || bestScore != lastScore) {
-                    invokeConsumers(game, bestMove);
+                    invokeConsumers(game, bestMove, bestScore);
                 } else if (depth == 2 + MIN_DEPTH) {
-                    invokeConsumers(game, bestMove);
+                    invokeConsumers(game, bestMove, bestScore);
                 }
             }
 
@@ -302,7 +302,7 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
             depth += 2;
         }
 
-        invokeConsumers(game, bestMove);
+        invokeConsumers(game, bestMove, bestScore);
         cancelCountDown();
 
         return bestMove;
@@ -448,8 +448,8 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
      * @param game          Game state before a search
      * @param bestMove      Best move found so far
      */
-    protected void invokeConsumers(Game game, int bestMove) {
-        Report report = new CacheReport(game, cache, bestMove);
+    protected void invokeConsumers(Game game, int bestMove, int bestScore) {
+        Report report = new CacheReport(game, cache, bestMove, bestScore);
 
         for (Consumer<Report> consumer : consumers) {
             consumer.accept(report);

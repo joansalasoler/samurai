@@ -48,9 +48,9 @@ public class CacheReport implements Report {
      * @param cache     Engine cache
      * @param move      Best move
      */
-    public CacheReport(Game game, Cache<Game> cache, int move) {
-        if (cache != null && move != Game.NULL_MOVE) {
-            collectReport(game, cache, move);
+    public CacheReport(Game game, Cache<Game> cache, int move, int score) {
+        if (move != Game.NULL_MOVE) {
+            collectReport(game, cache, move, score);
         }
     }
 
@@ -98,12 +98,17 @@ public class CacheReport implements Report {
      * @param cache     Engine's cache
      * @param bestMove  Best move found
      */
-    private void collectReport(Game game, Cache<Game> cache, int bestMove) {
+    private void collectReport(Game game, Cache<Game> cache, int bestMove, int bestScore) {
         game.makeMove(bestMove);
 
         // Ensure the game state is cached
 
-        if (cache.find(game) == false) {
+        if (cache == null || !cache.find(game)) {
+            depth = 0;
+            flag = Flag.EXACT;
+            score = -game.toCentiPawns(bestScore);
+            variation = new int[1];
+            variation[0] = bestMove;
             game.unmakeMove();
             return;
         }
