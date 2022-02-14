@@ -138,15 +138,17 @@ public class UCTRoots implements Closeable, Roots<Game> {
         List<BookEntry> entries = findEntries(game);
 
         if ((outOfBook = entries.isEmpty()) == false) {
-            BookEntry secure = pickSecureEntry(entries);
-            double minScore = disturbance + computeScore(secure);
+            BookEntry choice = pickSecureEntry(entries);
+            double minScore = disturbance + computeScore(choice);
 
             entries.removeIf(e -> computeScore(e) > minScore);
             entries.removeIf(e -> computeScore(e) > -threshold);
 
-            if ((outOfBook = entries.isEmpty()) == false) {
-                return pickRandomEntry(entries).getMove();
+            if (entries.isEmpty() == false) {
+                choice = pickRandomEntry(entries);
             }
+
+            return choice.getMove();
         }
 
         return NULL_MOVE;
@@ -170,14 +172,14 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
-     * Picks the entry which provides the best move. This is the
-     * entry for which its score's lowest bound is greater.
+     * Picks an entry that provides a safe move. That is, an entry
+     * for which its score's lowest bound is maximum.
      *
      * @param entries       List of entries
      * @return              Best entry on the list
      */
     protected BookEntry pickSecureEntry(List<BookEntry> entries) {
-        BookEntry bestEntry = entries.get(0);
+        BookEntry bestEntry = pickRandomEntry(entries);
         double bestScore = computeScore(bestEntry);
 
         for (BookEntry entry : entries) {
@@ -194,13 +196,13 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
-     * Picks the entry with the highest average score.
+     * Picks an entry with the highest average score.
      *
      * @param entries       List of entries
      * @return              Best entry on the list
      */
     protected BookEntry pickMaxEntry(List<BookEntry> entries) {
-        BookEntry bestEntry = entries.get(0);
+        BookEntry bestEntry = pickRandomEntry(entries);
         double bestScore = bestEntry.getScore();
 
         for (BookEntry entry : entries) {
