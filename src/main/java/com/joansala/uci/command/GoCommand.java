@@ -116,6 +116,8 @@ public class GoCommand implements UCICommand {
         engine.setDepth(depth - 1);
         engine.setMoveTime(moveTime);
         brain.startThinking(infinite);
+
+        service.debug("Search time is " + moveTime + " ms");
     }
 
 
@@ -133,6 +135,6 @@ public class GoCommand implements UCICommand {
         manager.setTimeIncrement(NORTH, 0);
         manager.setFixedTimeActive(false);
         manager.setMoveTime(moveTime);
-        manager.setMovesLeft(0);
+        manager.setMovesLeft(2 * TimeManager.MAX_MOVES);
     }
 }
