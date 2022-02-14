@@ -426,7 +426,7 @@ public class UCT extends BaseEngine implements HasLeaves {
         }
 
         if (score == Game.DRAW_SCORE) {
-            score = contempt;
+            score = contempt * turn;
         }
 
         return score * game.turn();

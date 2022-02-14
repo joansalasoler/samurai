@@ -109,6 +109,16 @@ public interface Engine {
     void setInfinity(int score);
 
 
+
+
+    /**
+     * Set which turn the engine is playing.
+     *
+     * @paparam turn    Player turn identifier
+     */
+    void setTurn(int turn);
+
+
     /**
      * Attaches a move consumer to the engine.
      *

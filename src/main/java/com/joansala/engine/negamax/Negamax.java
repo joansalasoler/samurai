@@ -289,6 +289,8 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
             if (depth > MIN_DEPTH) {
                 if (bestMove != lastMove || bestScore != lastScore) {
                     invokeConsumers(game, bestMove);
+                } else if (depth == 2 + MIN_DEPTH) {
+                    invokeConsumers(game, bestMove);
                 }
             }
 
@@ -325,8 +327,11 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         if (game.hasEnded()) {
             final int score = game.outcome();
 
-            return (score == Game.DRAW_SCORE) ?
-                contempt * game.turn() : score * game.turn();
+            if (score == Game.DRAW_SCORE) {
+                return contempt * turn * game.turn();
+            }
+
+            return score * game.turn();
         }
 
         // Return an endgame score if possible
@@ -334,8 +339,13 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         if (leaves.find(game)) {
             final int score = leaves.getScore();
 
-            return (score == Game.DRAW_SCORE) ?
-                contempt * game.turn() : score * game.turn();
+            if (leaves.getFlag() == Flag.EXACT) {
+                if (score == Game.DRAW_SCORE) {
+                    return contempt * turn * game.turn();
+                }
+            }
+
+            return score * game.turn();
         }
 
         // Return the heuristic score of the node

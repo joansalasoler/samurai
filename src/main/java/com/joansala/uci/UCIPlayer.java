@@ -20,6 +20,7 @@ package com.joansala.uci;
 import com.google.inject.Inject;
 import com.joansala.engine.*;
 import static com.joansala.uci.UCI.*;
+import static com.joansala.engine.Game.*;
 
 
 /**
@@ -38,6 +39,18 @@ public class UCIPlayer {
 
     /** Time limit per move (ms) */
     private long moveTime = Engine.DEFAULT_MOVETIME;
+
+    /** Milliseconds left on south's clock */
+    private long southTime = Integer.MIN_VALUE;
+
+    /** Milliseconds left on north's clock */
+    private long northTime = Integer.MIN_VALUE;
+
+    /** Time increment per move (ms) */
+    private long incrementTime = 0;
+
+    /** If time control is enabled */
+    private boolean hasTimeControl = false;
 
 
     /**
@@ -90,6 +103,70 @@ public class UCIPlayer {
 
 
     /**
+     * Enable or disable time controls.
+     */
+    public void setTimeControl(boolean active) {
+        this.hasTimeControl = active;
+    }
+
+
+    /**
+     * Sets the time increment per move.
+     */
+    public void setIncrementTime(long milliseconds) {
+        this.incrementTime = milliseconds;
+    }
+
+
+    /**
+     * Time left on south's clock.
+     */
+    public void setSouthTime(long milliseconds) {
+        this.southTime = milliseconds;
+    }
+
+
+    /**
+     * Time left on north's clock.
+     */
+    public void setNorthTime(long milliseconds) {
+        this.northTime = milliseconds;
+    }
+
+
+    /**
+     * Sends an UCI option to the engine service.
+     */
+    public void setUCIOption(String name, String value) throws Exception {
+        client.send(SETOPTION, NAME, name, VALUE, value);
+    }
+
+
+    /**
+     * Enable or disable debug mode.
+     */
+    public void setDebug(boolean active) throws Exception {
+        client.send(DEBUG, active ? ON : OFF);
+    }
+
+
+    /**
+     * Turn on or off this engine draw search mode.
+     */
+    public void setDrawSearch(boolean active) throws Exception {
+        setUCIOption(DRAW_SEARCH, active ? TRUE : FALSE);
+    }
+
+
+    /**
+     * Turn this engine is playing.
+     */
+    public void setTurn(int turn) throws Exception {
+        setUCIOption(ENGINE_TURN, turn == SOUTH ? SOUTH_TURN : NORTH_TURN);
+    }
+
+
+    /**
      * Asks the engine process to quit.
      */
     public void quitEngine() throws Exception {
@@ -130,7 +207,18 @@ public class UCIPlayer {
      */
     public int startThinking(Game game) throws Exception {
         client.send(toUCIPosition(game));
-        client.send(GO, MOVETIME, moveTime, DEPTH, depth);
+
+        if (hasTimeControl == false) {
+            client.send(
+                GO, MOVETIME, moveTime, DEPTH, depth
+            );
+        }  else {
+            client.send(
+                GO, WTIME, southTime, BTIME, northTime,
+                WINC, incrementTime, BINC, incrementTime,
+                DEPTH, depth
+            );
+        }
 
         while (client.isThinking()) {
             client.receive();
