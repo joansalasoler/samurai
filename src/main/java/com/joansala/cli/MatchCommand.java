@@ -74,6 +74,14 @@ public class MatchCommand implements Callable<Integer> {
     private long northTime = 0;
 
     @Option(
+      names = "--command",
+      description = "Custom UCI engine command",
+      converter = ProcessConverter.class,
+      defaultValue = "<default>"
+    )
+    private Process service = null;
+
+    @Option(
       names = "--depth",
       description = "Depth limit per move (plies)"
     )
@@ -98,24 +106,16 @@ public class MatchCommand implements Callable<Integer> {
     private long incrementTime = 0;
 
     @Option(
-      names = "--command",
-      description = "Custom UCI engine command",
-      converter = ProcessConverter.class,
-      defaultValue = "<default>"
-    )
-    private Process service = null;
-
-    @Option(
-      names = "--draw-search",
-      description = "Enable draw search mode."
-    )
-    private boolean drawSearch = false;
-
-    @Option(
       names = "--debug",
       description = "Log debug messages."
     )
     private boolean debug = false;
+
+    @Option(
+      names = "--uci-option",
+      description = "Custom UCI option [name:value] (multiple)"
+    )
+    private String[] options = null;
 
 
     /**
@@ -381,13 +381,17 @@ public class MatchCommand implements Callable<Integer> {
      */
     private void initializePlayer() throws Exception{
         player.startEngine();
+        player.setDebug(debug);
         player.startNewGame();
         player.setDepth(depth);
         player.setMoveTime(moveTime);
         player.setIncrementTime(incrementTime);
         player.setTimeControl(controlTime > 0);
-        player.setDrawSearch(drawSearch);
-        player.setDebug(debug);
+
+        for (String option : options) {
+            String[] parts = option.split(":", 2);
+            player.setUCIOption(parts[0], parts[1]);
+        }
     }
 
 
