@@ -38,9 +38,6 @@ public class DOEStore implements AutoCloseable {
     /** Primary index for the store */
     private final PrimaryIndex<Long, DOENode> nodes;
 
-    /** Current database transaction */
-    private Transaction transaction;
-
 
     /**
      * Create a new store instance.
@@ -50,7 +47,6 @@ public class DOEStore implements AutoCloseable {
         environment = openEnvironment(home);
         store = openStore(environment);
         nodes = store.getPrimaryIndex(Long.class, DOENode.class);
-        transaction = newTransaction();
     }
 
 
@@ -59,7 +55,7 @@ public class DOEStore implements AutoCloseable {
      */
     private Environment openEnvironment(File home) throws DatabaseException {
         EnvironmentConfig config = new EnvironmentConfig();
-        config.setTransactional(true);
+        config.setTransactional(false);
         config.setAllowCreate(true);
 
         return new Environment(home, config);
@@ -71,7 +67,8 @@ public class DOEStore implements AutoCloseable {
      */
     private EntityStore openStore(Environment env) throws DatabaseException {
         StoreConfig config = new StoreConfig();
-        config.setTransactional(true);
+        config.setDeferredWrite(true);
+        config.setTransactional(false);
         config.setAllowCreate(true);
 
         return new EntityStore(env, "graph", config);
@@ -89,14 +86,6 @@ public class DOEStore implements AutoCloseable {
         }
 
         return home;
-    }
-
-
-    /**
-     * Creates a new database transaction.
-     */
-    private Transaction newTransaction() throws DatabaseException {
-        return environment.beginTransaction(null, null);
     }
 
 
@@ -159,38 +148,12 @@ public class DOEStore implements AutoCloseable {
 
 
     /**
-     * Commit current transaction.
-     */
-    public void commit() {
-        try {
-            transaction.commitSync();
-            transaction = newTransaction();
-        } catch (DatabaseException e) {
-            handleException(e);
-        }
-    }
-
-
-    /**
-     * Rollback current transaction.
-     */
-    public void rollback() {
-        try {
-            transaction.abort();
-            transaction = newTransaction();
-        } catch (DatabaseException e) {
-            handleException(e);
-        }
-    }
-
-
-    /**
      * Close this store.
      */
     @Override
     public void close() {
         try {
-            transaction.abort();
+            store.sync();
             store.close();
             environment.close();
         } catch (DatabaseException e) {
