@@ -55,9 +55,11 @@ public class DOEExporter {
      * Exports the database nodes to a file.
      *
      * @param path      File were to save the book
+     * @minCount        Minimum entry count
+     *
      * @return          Number of nodes exported
      */
-    public long export(String path) throws IOException {
+    public long export(String path, long minCount) throws IOException {
         BookWriter writer = new BookWriter(path);
         long count = 0L;
 
@@ -66,8 +68,10 @@ public class DOEExporter {
 
         for (DOENode node : store.values()) {
             if (node.evaluated && node.parent != null) {
-                writer.writeEntry(toBookEntry(node));
-                count++;
+                if (node.count >= minCount) {
+                    writer.writeEntry(toBookEntry(node));
+                    count++;
+                }
             }
         }
 

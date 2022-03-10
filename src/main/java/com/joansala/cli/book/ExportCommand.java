@@ -34,24 +34,30 @@ import com.joansala.engine.doe.*;
 public class ExportCommand implements Callable<Integer> {
 
     @Option(
-      names = "--path",
+      names = "--input",
       description = "Database storage folder"
     )
-    private String path = "book.db";
+    private String inputPath = "book.db";
 
     @Option(
-      names = "--export",
+      names = "--output",
       description = "Path to export the opening book",
       required = true
     )
-    private String exportPath = null;
+    private String outputPath = null;
+
+    @Option(
+      names = "--min-count",
+      description = "Minimum expansions of exported entries"
+    )
+    private long minCount = 1;
 
 
     /**
      * {@inheritDoc}
      */
     @Override public Integer call() throws Exception {
-        final DOEStore store = new DOEStore(path);
+        final DOEStore store = new DOEStore(inputPath);
         final DOEExporter exporter = new DOEExporter(store);
 
         // Ensures the store is properly closed
@@ -62,8 +68,10 @@ public class ExportCommand implements Callable<Integer> {
             System.out.println("Done.");
         }));
 
+        long count = exporter.export(outputPath, minCount);
+
         System.out.format("%nExporting book%n%s%n", horizontalRule('-'));
-        System.out.format("Entries: %d%n", exporter.export(exportPath));
+        System.out.format("Entries: %d%n", count);
 
         return 0;
     }
