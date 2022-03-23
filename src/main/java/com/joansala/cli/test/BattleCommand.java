@@ -87,7 +87,6 @@ public class BattleCommand implements Callable<Integer> {
     )
     private int matches = 0;
 
-
     @Option(
       names = "--rounds",
       description = "Number of rounds to play."
@@ -105,7 +104,6 @@ public class BattleCommand implements Callable<Integer> {
       description = "Print the board after each move"
     )
     private boolean watch = false;
-
 
     @Option(
       names = "--debug",
@@ -173,8 +171,14 @@ public class BattleCommand implements Callable<Integer> {
 
             // Play a match till its completion
 
+            south.setDebug(debug);
             south.startNewGame();
+            south.setTurn(SOUTH);
+
+            north.setDebug(debug);
             north.startNewGame();
+            north.setTurn(NORTH);
+
             game.setBoard(board);
 
             if (watch) printBoard(game);
@@ -184,6 +188,7 @@ public class BattleCommand implements Callable<Integer> {
                 player = (game.turn() == SOUTH) ? south : north;
                 player.stopPondering();
                 int move = player.startThinking(game);
+
                 game.ensureCapacity(1 + game.length());
                 game.makeMove(move);
 

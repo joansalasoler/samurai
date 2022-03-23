@@ -17,40 +17,114 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Singleton;
 import com.joansala.util.StopWatch;
 
 
 /**
  * Utility class to accumulate statistics.
  */
+@Singleton
 public final class BenchStats {
 
     /** Elapsed time stop-watch */
-    public StopWatch watch = new StopWatch();
+    private StopWatch watch = new StopWatch();
 
     /** Searched states (root states) */
-    public BenchCounter moves = new BenchCounter();
+    private BenchCounter moves = new BenchCounter();
 
     /** Visited states (moves made) */
-    public BenchCounter visits = new BenchCounter();
+    private BenchCounter visits = new BenchCounter();
 
     /** Exact evaluations */
-    public BenchCounter terminal = new BenchCounter();
+    private BenchCounter terminal = new BenchCounter();
 
     /** Heuristic evaluations */
-    public BenchCounter heuristic = new BenchCounter();
+    private BenchCounter heuristic = new BenchCounter();
 
     /** Average reached depth */
-    public BenchAverage depth = new BenchAverage();
+    private BenchAverage depth = new BenchAverage();
 
     /** Cache probes */
-    public BenchCounter cache = new BenchCounter();
+    private BenchCounter cache = new BenchCounter();
 
     /** Cache probes */
-    public BenchCounter leaves = new BenchCounter();
+    private BenchCounter leaves = new BenchCounter();
 
     /** Average search time per move */
-    public BenchAverage movetime = new BenchAverage();
+    private BenchAverage movetime = new BenchAverage();
+
+
+    /**
+     * Stop watch.
+     */
+    public StopWatch watch() {
+        return watch;
+    }
+
+
+    /**
+     * Heuristic evalutation counter.
+     */
+    public BenchCounter heuristic() {
+        return heuristic;
+    }
+
+
+    /**
+     * Terminal evalutation counter.
+     */
+    public BenchCounter terminal() {
+        return terminal;
+    }
+
+
+    /**
+     * Root nodes counter.
+     */
+    public BenchCounter moves() {
+        return moves;
+    }
+
+
+    /**
+     * Node visits counter.
+     */
+    public BenchCounter visits() {
+        return visits;
+    }
+
+
+    /**
+     * Movetime average statistics.
+     */
+    public BenchAverage movetime() {
+        return movetime;
+    }
+
+
+    /**
+     * Depth average statistics.
+     */
+    public BenchAverage depth() {
+        return depth;
+    }
+
+
+    /**
+     * Cache probes counter.
+     */
+    public BenchCounter cache() {
+        return cache;
+    }
+
+
+    /**
+     * Leaves probes counter.
+     */
+    public BenchCounter leaves() {
+        return leaves;
+    }
 
 
     /**

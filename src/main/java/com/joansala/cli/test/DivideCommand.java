@@ -136,10 +136,10 @@ public class DivideCommand implements Callable<Integer> {
      * @param game      Game instance
      */
     private void benchmark(Game game, int depth) {
-        stats.visits.clear();
+        stats.visits().clear();
 
         for (int move : game.legalMoves()) {
-            stats.terminal.clear();
+            stats.terminal().clear();
             game.makeMove(move);
             expand(game, depth);
             String notation = parser.toCoordinates(move);
@@ -159,8 +159,8 @@ public class DivideCommand implements Callable<Integer> {
         int count = moves.length;
 
         if (depth <= 1 || game.hasEnded()) {
-            stats.terminal.increment(count);
-            stats.visits.increment(count);
+            stats.terminal().increment(count);
+            stats.visits().increment(count);
         } else {
             for (int move : moves) {
                 game.makeMove(move);
@@ -198,7 +198,7 @@ public class DivideCommand implements Callable<Integer> {
         return String.format(
             "%s: %d",
             notation,
-            stats.terminal.success()
+            stats.terminal().success()
         );
     }
 
@@ -214,7 +214,7 @@ public class DivideCommand implements Callable<Integer> {
             "%s%n" +
             "Leaf nodes count:         %,26d nodes%n",
             horizontalRule('-'),
-            stats.visits.count()
+            stats.visits().count()
         );
     }
 

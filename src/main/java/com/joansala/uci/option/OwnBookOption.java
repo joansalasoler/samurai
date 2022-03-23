@@ -64,8 +64,8 @@ public class OwnBookOption extends CheckOption {
     /**
      * {@inheritDoc}
      */
-    public void handle(UCIService service, boolean enabled) {
-        service.setRoots(enabled ? roots : null);
-        service.debug("Roots are now " + (enabled ? "enabled" : "disabled"));
+    public void handle(UCIService service, boolean active) {
+        service.setRoots(active ? roots : null);
+        service.debug("Roots are now " + (active ? "enabled" : "disabled"));
     }
 }

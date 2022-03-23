@@ -101,11 +101,14 @@ public class UCI {
     public static final String TRUE =           "true";
     public static final String UPPERBOUND =     "upperbound";
     public static final String VARIATION =      "pv";
+    public static final String SOUTH_TURN =     "south";
+    public static final String NORTH_TURN =     "north";
 
     // -------------------------------------------------------------------
     // Predefined options
     // -------------------------------------------------------------------
 
+    public static final String ENGINE_TURN =    "EngineTurn";
     public static final String DRAW_SEARCH =    "DrawSearch";
     public static final String HASH_SIZE =      "Hash";
     public static final String USE_CACHE =      "UseCache";

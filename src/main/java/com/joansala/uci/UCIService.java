@@ -143,6 +143,7 @@ public class UCIService {
         options.put(USE_ROOTS, new OwnBookOption());
         options.put(USE_PONDER, new PonderOption());
         options.put(DRAW_SEARCH, new DrawSearchOption());
+        options.put(ENGINE_TURN, new EngineTurnOption());
     }
 
 

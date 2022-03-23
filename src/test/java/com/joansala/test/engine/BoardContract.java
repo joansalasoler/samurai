@@ -1,9 +1,12 @@
-package com.joansala.engine;
+package com.joansala.test.engine;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.joansala.engine.Board;
+import com.joansala.engine.Game;
 import com.joansala.util.suites.Suite;
 
 

@@ -28,19 +28,19 @@ import com.joansala.engine.Engine;
 public class TimeManager {
 
     /** Maximum moves to plan ahead */
-    private static int MAX_MOVES = 20;
+    public static final int MAX_MOVES = 20;
 
     /** Minimum search time in milliseconds */
-    private static long MIN_MOVETIME = 500;
+    public static final long MIN_MOVETIME = 500;
 
     /** Set aside time for each ply in milliseconds */
-    private static long TIME_OVERHEAD = 50;
+    public static final long TIME_OVERHEAD = 50;
 
     /** Current clock of each player */
     private Map<Integer, Clock> clocks = new HashMap<>();
 
     /** Moves left till the next time control */
-    private int movesLeft = Integer.MAX_VALUE;
+    private int movesLeft = MAX_MOVES;
 
     /** Fixed maximum search time in milliseconds */
     private long moveTime = Engine.DEFAULT_MOVETIME;

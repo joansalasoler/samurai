@@ -56,16 +56,16 @@ public class UseLeavesOption extends CheckOption {
      * {@inheritDoc}
      */
     public void initialize(UCIService service) {
-        Leaves<Game> leaves = service.getLeaves();
-        enabled = (leaves instanceof BaseLeaves == false);
+        this.leaves = service.getLeaves();
+        this.enabled = (leaves instanceof BaseLeaves == false);
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void handle(UCIService service, boolean enabled) {
-        service.setLeaves(enabled ? leaves : null);
-        service.debug("Leaves are now " + (enabled ? "enabled" : "disabled"));
+    public void handle(UCIService service, boolean active) {
+        service.setLeaves(active ? leaves : null);
+        service.debug("Leaves are now " + (active ? "enabled" : "disabled"));
     }
 }

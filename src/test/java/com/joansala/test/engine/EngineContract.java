@@ -1,8 +1,9 @@
-package com.joansala.engine;
+package com.joansala.test.engine;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.joansala.mock.*;
+import com.joansala.engine.Engine;
+import com.joansala.test.mock.*;
 
 
 /**

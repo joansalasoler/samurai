@@ -17,17 +17,16 @@ package com.joansala.util.bench;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Inject;
 import com.joansala.engine.Game;
 import com.joansala.engine.Leaves;
+import com.joansala.util.wrap.WrapLeaves;
 
 
 /**
  * A decorated endgames book that accumulates statistics.
  */
-public final class BenchLeaves implements Leaves<Game> {
-
-    /** Decorated leaves instance */
-    private Leaves<Game> leaves;
+public final class BenchLeaves extends WrapLeaves {
 
     /** Statistics accumulator */
     private BenchStats stats;
@@ -36,32 +35,16 @@ public final class BenchLeaves implements Leaves<Game> {
     /**
      * Decorates an engames book object.
      */
-    public BenchLeaves(BenchStats stats, Leaves<Game> leaves) {
+    @Inject
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public BenchLeaves(BenchStats stats, Leaves leaves) {
+        super(leaves);
         this.stats = stats;
-        this.leaves = leaves;
-    }
-
-
-    /** {@inheritDoc} */
-    public Leaves<Game> cast() {
-        return leaves;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override public int getFlag() {
-        return leaves.getFlag();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override public int getScore() {
-        return leaves.getScore();
     }
 
 
     /** {@inheritDoc} */
     @Override public boolean find(Game game) {
-        return stats.leaves.test(leaves.find(game.cast()));
+        return stats.leaves().test(leaves.find(game.cast()));
     }
 }

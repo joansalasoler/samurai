@@ -56,16 +56,16 @@ public class UseCacheOption extends CheckOption {
      * {@inheritDoc}
      */
     public void initialize(UCIService service) {
-        Cache<Game> cache = service.getCache();
-        enabled = (cache instanceof BaseCache == false);
+        this.cache = service.getCache();
+        this.enabled = (cache instanceof BaseCache == false);
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void handle(UCIService service, boolean value) {
-        service.setCache(enabled ? cache : null);
-        service.debug("Cache is now " + (enabled ? "enabled" : "disabled"));
+    public void handle(UCIService service, boolean active) {
+        service.setCache(active ? cache : null);
+        service.debug("Cache is now " + (active ? "enabled" : "disabled"));
     }
 }

@@ -59,6 +59,9 @@ public class BaseEngine implements Engine {
     /** Contempt factor used to evaluaty draws */
     protected int contempt = Game.DRAW_SCORE;
 
+    /** Turn of the engine player */
+    protected int turn = Game.SOUTH;
+
     /** This flag is set to true to abort a computation */
     private volatile boolean aborted = false;
 
@@ -157,6 +160,15 @@ public class BaseEngine implements Engine {
     @Override
     public synchronized void setInfinity(int score) {
         maxScore = Math.max(score, 1);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void setTurn(int turn) {
+        this.turn = turn;
     }
 
 

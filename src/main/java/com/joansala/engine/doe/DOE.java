@@ -180,7 +180,6 @@ public class DOE extends BaseEngine {
                     }
                 }
 
-                store.commit();
                 size--;
             }
 
@@ -309,7 +308,6 @@ public class DOE extends BaseEngine {
             root.evaluated = true;
             root.updateScore(0.0);
             store.write(root);
-            store.commit();
         }
 
         // Check that the stored root is valid for the training
@@ -337,7 +335,6 @@ public class DOE extends BaseEngine {
             node.evaluated = true;
             updateWaitCount(node, -WAIT_PENALTY);
             backpropagate(node, score);
-            store.commit();
         }
     }
 

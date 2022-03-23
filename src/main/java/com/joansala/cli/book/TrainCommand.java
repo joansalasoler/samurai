@@ -114,6 +114,7 @@ public class TrainCommand implements Callable<Integer> {
         trainer.setDepth(depth);
         trainer.setInfinity(rootGame.infinity());
         trainer.setExplorationBias(bias);
+        trainer.setContempt(0);
 
         System.out.format("%s%n", formatSetup());
         System.out.format("Expanding nodes%n%s%n", horizontalRule('-'));
@@ -287,6 +288,7 @@ public class TrainCommand implements Callable<Integer> {
 
         private int computeScore(int[] moves) {
             setMoves(moves);
+            engine.newMatch();
             return engine.computeBestScore(game);
         }
     }

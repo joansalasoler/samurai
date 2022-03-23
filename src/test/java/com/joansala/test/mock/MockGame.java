@@ -1,4 +1,4 @@
-package com.joansala.mock;
+package com.joansala.test.mock;
 
 /*
  * Samurai framework.

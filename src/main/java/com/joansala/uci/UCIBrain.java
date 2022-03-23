@@ -223,6 +223,7 @@ public class UCIBrain extends Thread {
     private void findBestMove() {
         int move = NULL_MOVE;
         int ponder = NULL_MOVE;
+        info = null;
 
         if (game.hasEnded()) {
             service.send(BESTMOVE, NULLMOVE);

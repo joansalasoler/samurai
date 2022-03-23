@@ -288,7 +288,9 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
 
             if (depth > MIN_DEPTH) {
                 if (bestMove != lastMove || bestScore != lastScore) {
-                    invokeConsumers(game, bestMove);
+                    invokeConsumers(game, bestMove, bestScore);
+                } else if (depth == 2 + MIN_DEPTH) {
+                    invokeConsumers(game, bestMove, bestScore);
                 }
             }
 
@@ -300,7 +302,7 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
             depth += 2;
         }
 
-        invokeConsumers(game, bestMove);
+        invokeConsumers(game, bestMove, bestScore);
         cancelCountDown();
 
         return bestMove;
@@ -325,8 +327,11 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         if (game.hasEnded()) {
             final int score = game.outcome();
 
-            return (score == Game.DRAW_SCORE) ?
-                contempt * game.turn() : score * game.turn();
+            if (score == Game.DRAW_SCORE) {
+                return contempt * turn * game.turn();
+            }
+
+            return score * game.turn();
         }
 
         // Return an endgame score if possible
@@ -334,8 +339,13 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         if (leaves.find(game)) {
             final int score = leaves.getScore();
 
-            return (score == Game.DRAW_SCORE) ?
-                contempt * game.turn() : score * game.turn();
+            if (leaves.getFlag() == Flag.EXACT) {
+                if (score == Game.DRAW_SCORE) {
+                    return contempt * turn * game.turn();
+                }
+            }
+
+            return score * game.turn();
         }
 
         // Return the heuristic score of the node
@@ -438,8 +448,8 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
      * @param game          Game state before a search
      * @param bestMove      Best move found so far
      */
-    protected void invokeConsumers(Game game, int bestMove) {
-        Report report = new CacheReport(game, cache, bestMove);
+    protected void invokeConsumers(Game game, int bestMove, int bestScore) {
+        Report report = new CacheReport(game, cache, bestMove, bestScore);
 
         for (Consumer<Report> consumer : consumers) {
             consumer.accept(report);

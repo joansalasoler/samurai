@@ -1,4 +1,4 @@
-package com.joansala.engine;
+package com.joansala.test.engine;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.Random;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.joansala.engine.Game;
 
 
 /**

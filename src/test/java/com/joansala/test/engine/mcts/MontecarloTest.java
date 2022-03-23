@@ -1,8 +1,9 @@
-package com.joansala.engine.mcts;
+package com.joansala.test.engine.mcts;
 
 import org.junit.jupiter.api.*;
 import com.joansala.engine.Engine;
-import com.joansala.engine.EngineContract;
+import com.joansala.engine.mcts.Montecarlo;
+import com.joansala.test.engine.EngineContract;
 
 
 @DisplayName("Montecarlo engine")

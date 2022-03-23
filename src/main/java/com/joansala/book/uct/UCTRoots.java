@@ -114,6 +114,19 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
+     * Lists all the book entries for a game state.
+     *
+     * @param game      Game state to query
+     * @return          List of legal book entries
+     */
+    public List<BookEntry> findEntries(Game game) throws IOException {
+        List<BookEntry> entries = readChildren(game);
+        entries.removeIf(e -> !game.isLegal(e.getMove()));
+        return entries;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -122,8 +135,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
             return NULL_MOVE;
         }
 
-        List<BookEntry> entries = readChildren(game);
-        entries.removeIf(e -> !game.isLegal(e.getMove()));
+        List<BookEntry> entries = findEntries(game);
 
         if ((outOfBook = entries.isEmpty()) == false) {
             BookEntry secure = pickSecureEntry(entries);
