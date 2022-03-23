@@ -51,7 +51,7 @@ public class BookReader implements Closeable {
      * Open a book for the given file path.
      */
      public BookReader(String path) throws IOException {
-         file = new RandomAccessFile(path, "rw");
+         file = new RandomAccessFile(path, "r");
          signature = readSignature();
          headers = readHeaders();
          offset = file.getFilePointer();

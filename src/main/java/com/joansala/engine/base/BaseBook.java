@@ -45,7 +45,7 @@ public class BaseBook implements AutoCloseable {
      * Open a book for the given file path.
      */
      public BaseBook(String path) throws IOException {
-         file = new RandomAccessFile(path, "rw");
+         file = new RandomAccessFile(path, "r");
          signature = readSignature();
          headers = readHeaders();
          offset = file.getFilePointer();
