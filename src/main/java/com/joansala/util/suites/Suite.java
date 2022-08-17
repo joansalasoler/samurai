@@ -17,6 +17,9 @@ package com.joansala.util.suites;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.joansala.engine.Board;
+import com.joansala.engine.Game;
+
 
 /**
  * Encapsulates a game suite.
@@ -36,6 +39,22 @@ public class Suite {
     public Suite(String diagram, String notation) {
         this.diagram = diagram;
         this.notation = notation;
+    }
+
+
+    /**
+     * Converts a {@code Game} object to a {@code Suite}.
+     *
+     * @param game      Game state to convert
+     * @return          New game suite
+     */
+    public static Suite fromGame(Game game) {
+        int[] moves = game.moves();
+        Board board = game.getBoard();
+        String diagram = board.toDiagram();
+        String notation = board.toNotation(moves);
+
+        return new Suite(diagram, notation);
     }
 
 
@@ -60,6 +79,8 @@ public class Suite {
      */
     @Override
     public String toString() {
-        return String.format("%s %s", diagram, notation);
+        return notation.isEmpty() == false ?
+            String.format("%s moves %s", diagram, notation) :
+            String.format("%s", diagram);
     }
 }
