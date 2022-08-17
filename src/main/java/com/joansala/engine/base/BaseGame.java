@@ -18,9 +18,11 @@ package com.joansala.engine.base;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 import com.joansala.engine.Board;
+import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
 
 
@@ -318,7 +320,12 @@ public abstract class BaseGame implements Game {
      */
     @Override
     public void ensureCapacity(int size) {
-        System.gc();
+        if (size > capacity) {
+            size = Math.max(size, capacity + Engine.DEFAULT_DEPTH);
+            size = Math.min(Integer.MAX_VALUE, size);
+            moves = Arrays.copyOf(moves, size);
+            System.gc();
+        }
     }
 
 
