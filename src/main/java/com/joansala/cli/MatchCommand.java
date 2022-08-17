@@ -115,7 +115,7 @@ public class MatchCommand implements Callable<Integer> {
       names = "--uci-option",
       description = "Custom UCI option [name:value] (multiple)"
     )
-    private String[] options = null;
+    private String[] options = new String[0];
 
 
     /**
@@ -202,6 +202,7 @@ public class MatchCommand implements Callable<Integer> {
             writer.println("Keyboard interrupt.");
         } catch (Exception e) {
             writer.println("Unhandled exception.");
+            e.printStackTrace();
         } finally {
             if (player.isRunning()) {
                 player.quitEngine();
