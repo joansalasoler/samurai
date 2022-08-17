@@ -23,6 +23,7 @@ import picocli.CommandLine.*;
 import com.joansala.engine.base.BaseModule;
 import com.joansala.cli.util.CommandFactory;
 import com.joansala.cli.book.BookCommand;
+import com.joansala.cli.suite.SuiteCommand;
 import com.joansala.cli.test.TestCommand;
 
 
@@ -37,6 +38,7 @@ import com.joansala.cli.test.TestCommand;
       MatchCommand.class,
       ServiceCommand.class,
       ShellCommand.class,
+      SuiteCommand.class,
       TestCommand.class
   }
 )
