@@ -29,6 +29,7 @@ import picocli.CommandLine.*;
   description = "Game suite utilities",
   mixinStandardHelpOptions = true,
   subcommands = {
+    ShowCommand.class,
     RandomCommand.class
   }
 )
