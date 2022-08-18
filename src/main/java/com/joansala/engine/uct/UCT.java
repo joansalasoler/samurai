@@ -180,6 +180,10 @@ public class UCT extends BaseEngine implements HasLeaves {
      * @return          Average outcome score
      */
     public synchronized int computeBestScore(Game game) {
+        if (game.hasEnded()) {
+            return game.outcome() * game.turn();
+        }
+
         computeBestMove(game);
         return (int) -bestChild.score();
     }
