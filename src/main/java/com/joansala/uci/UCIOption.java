@@ -18,7 +18,6 @@ package com.joansala.uci;
  */
 
 import java.util.function.BiConsumer;
-import com.joansala.uci.UCIService;
 import static com.joansala.uci.UCI.*;
 
 
@@ -73,7 +72,7 @@ public abstract class UCIOption implements BiConsumer<UCIService, String> {
 
 
     /**
-     * Predefined obtion types.
+     * Predefined option types.
      */
     public static enum Type {
         CHECK_TYPE  (CHECK),

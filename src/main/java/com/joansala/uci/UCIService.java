@@ -365,7 +365,7 @@ public class UCIService {
 
 
     /**
-     * Converts objects to a space sepparated string.
+     * Converts objects to a space separated string.
      */
     private String toMessage(Object... values) {
         StringJoiner message = new StringJoiner(" ");

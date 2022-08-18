@@ -49,7 +49,7 @@ public interface Board {
     /**
      * Diagram representation of this board.
      *
-     * Returns a string that desbribes the state of this board and can
+     * Returns a string that describes the state of this board and can
      * be used to construct a new board instance that represents exactly
      * the same state as this board (@see #toBoard(String)).
      *
@@ -90,7 +90,7 @@ public interface Board {
 
 
     /**
-     * Board repesentation of a board diagram.
+     * Board representation of a board diagram.
      *
      * Returns a new board instance that represents exactly the same
      * board state described on the diagram notation (@see #toDiagram).

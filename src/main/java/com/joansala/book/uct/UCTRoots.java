@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.LinkedList;
 import com.joansala.engine.Game;
 import com.joansala.engine.Roots;
-import com.joansala.book.uct.BookEntry;
-import com.joansala.book.uct.BookReader;
 import static com.joansala.engine.Game.*;
 
 

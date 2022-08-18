@@ -147,11 +147,11 @@ public class TrainCommand implements Callable<Integer> {
             System.out.format("= %s%n", result);
         });
 
-        // Evaluate postions as they arrive
+        // Evaluate positions as they arrive
 
         trainer.train(nodeSize, rootGame, (moves) -> {
             try{
-                Evaluator evaluator = evaluators.take​();
+                Evaluator evaluator = evaluators.take();
                 final int score = evaluator.computeScore(moves);
                 final int centis = rootGame.toCentiPawns(score);
                 final long count = store.count();
@@ -195,7 +195,7 @@ public class TrainCommand implements Callable<Integer> {
     /**
      * Formats the current engine setting into a string.
      *
-     * @retun       A string
+     * @return       A string
      */
     private String formatSetup() {
         return String.format(
@@ -221,7 +221,7 @@ public class TrainCommand implements Callable<Integer> {
     /**
      * Formats a computation result into a string.
      *
-     * @retun       A string
+     * @return       A string
      */
     private String formatResult(int[] moves, int score, long count) {
         String notation = rootBoard.toNotation(moves);

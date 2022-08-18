@@ -230,6 +230,12 @@ public class UCIBrain extends Thread {
             return;
         }
 
+        // Output legal moves if debug is enabled
+
+        if (service.getDebug() == true) {
+            service.debug(MOVES, getLegalMovesNotation(game));
+        }
+
         // Pick a move from the book or engine
 
         if (infinite == false) {
@@ -366,5 +372,24 @@ public class UCIBrain extends Thread {
         }
 
         return message.toString();
+    }
+
+
+    /**
+     * Obtain legal moves from a game as a human-readable string.
+     *
+     * @param game      Game state
+     * @return          Legal moves notation
+     */
+    private String getLegalMovesNotation(Game game) {
+        StringJoiner joiner = new StringJoiner(" ");
+        int[] moves = game.legalMoves();
+        Board board = game.toBoard();
+
+        for (int move : moves) {
+            joiner.add(board.toCoordinates(move));
+        }
+
+        return joiner.toString();
     }
 }

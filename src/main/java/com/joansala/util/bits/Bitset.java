@@ -19,7 +19,6 @@ package com.joansala.util.bits;
  */
 
 import java.util.function.Consumer;
-import com.joansala.util.bits.Bits;
 
 
 /**
@@ -127,7 +126,7 @@ public class Bitset implements Cloneable {
     /**
      * Perform an action on each bit that is set.
      *
-     * @param action    Action to perperform
+     * @param action    Action to perform
      */
     public void forEach(Consumer<Integer> action) {
         for (int i = 0; i < words.length; i++) {
