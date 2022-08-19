@@ -59,7 +59,13 @@ public class Montecarlo extends UCT {
             depth++;
         }
 
-        return game.outcome();
+        final int score = game.outcome();
+
+        for (int i = 0; i < depth; i++) {
+            game.unmakeMove();
+        }
+
+        return score;
     }
 
 
