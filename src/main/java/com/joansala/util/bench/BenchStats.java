@@ -64,7 +64,7 @@ public final class BenchStats {
 
 
     /**
-     * Heuristic evalutation counter.
+     * Heuristic evaluation counter.
      */
     public BenchCounter heuristic() {
         return heuristic;
@@ -72,7 +72,7 @@ public final class BenchStats {
 
 
     /**
-     * Terminal evalutation counter.
+     * Terminal evaluation counter.
      */
     public BenchCounter terminal() {
         return terminal;

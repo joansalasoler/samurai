@@ -87,10 +87,10 @@ public class BenchCommand implements Callable<Integer> {
     @Inject public BenchCommand(Injector injector) {
         stats = injector.getInstance(BenchStats.class);
         game = injector.getInstance(BenchGame.class);
-        leaves = injector.getInstance(BenchLeaves.class);
-        cache = injector.getInstance(BenchCache.class);
         parser = injector.getInstance(Board.class);
         engine = injector.getInstance(Engine.class);
+        cache = getInstanceOrNull(injector, BenchCache.class);
+        leaves = getInstanceOrNull(injector, BenchLeaves.class);
     }
 
 
@@ -188,9 +188,26 @@ public class BenchCommand implements Callable<Integer> {
 
 
     /**
+     * Obtain an instance of the given class if it was bound.
+     *
+     * @param injector      Object injector
+     * @param class         Object type
+     * @return              An object or {@code null}
+     */
+    private <T> T getInstanceOrNull(Injector injector, Class<T> type) {
+        T instance = null;
+
+        try {
+            instance = injector.getInstance(type);
+        } catch (Exception e) {}
+
+        return instance;
+    }
+
+    /**
      * Formats the current engine setting into a string.
      *
-     * @retun       A string
+     * @return       A string
      */
     private String formatSetup() {
         Game game = this.game;
@@ -234,7 +251,7 @@ public class BenchCommand implements Callable<Integer> {
     /**
      * Formats the current statistics into a string.
      *
-     * @retun       A string
+     * @return       A string
      */
     private String formatStats() {
         return String.format(

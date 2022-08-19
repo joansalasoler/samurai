@@ -33,7 +33,7 @@ public final class BenchLeaves extends WrapLeaves {
 
 
     /**
-     * Decorates an engames book object.
+     * Decorates an endgames book object.
      */
     @Inject
     @SuppressWarnings({"rawtypes", "unchecked"})
