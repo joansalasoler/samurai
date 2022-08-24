@@ -431,7 +431,7 @@ public class MatchCommand implements Callable<Integer> {
 
 
     /**
-     * This is bound to Ctrl + Z to undo moves.
+     * This is bound to Ctrl + U to undo moves.
      */
     private class UndoWidget implements Widget {
 
