@@ -27,11 +27,11 @@ package com.joansala.engine;
  * other information relevant for the gameplay; and provides methods for
  * the conversion of the game state between different representations.
  *
- * For example, a chess {@code Board} may encapulate the possibility of
+ * For example, a chess {@code Board} may encapsulate the possibility of
  * an en-passant capture or the number of moves performed along with the
  * position of the pieces and the turn; and use the Forsyth–Edwards Notation
  * to encode the game state as a diagram string ({@see toDiagram}) and an
- * Alegraic Notation to encode sequence of moves ({@see toNotation(int[])}).
+ * Algebraic Notation to encode sequence of moves ({@see toNotation(int[])}).
  *
  * It is a requirement for the board to be immutable. Any methods that
  * return state data must either return immutable objects or a new copy.

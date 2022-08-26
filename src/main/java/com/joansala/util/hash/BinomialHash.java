@@ -73,8 +73,8 @@ public class BinomialHash implements HashFunction {
      * Computes the binomial coefficient C(n, k).
      *
      * @param n     Number of objects
-     * @param k     Numner of choices
-     * @return      Binomial coeficient
+     * @param k     Number of choices
+     * @return      Binomial coefficient
      */
     private static long binomial(int n, int k) {
         long value = 1L;

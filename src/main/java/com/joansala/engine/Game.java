@@ -95,7 +95,7 @@ public interface Game {
      *
      * @param board     Start board
      * @throws GameEngineException  if {@code turn} is not valid or
-     *      {@code postion} is not a valid position representation
+     *      {@code position} is not a valid position representation
      */
     void setBoard(Board board);
 
@@ -259,7 +259,7 @@ public interface Game {
      * the game in any way.
      *
      * <p>Note that the order of the moves on the result array it's
-     * likely to improve/decresase the engine performance. So it may be
+     * likely to improve/decrease the engine performance. So it may be
      * a good idea to store the best moves first.</p>
      *
      * @see Game#nextMove
