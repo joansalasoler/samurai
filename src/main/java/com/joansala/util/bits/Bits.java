@@ -118,4 +118,34 @@ public final class Bits {
     public static final long shift(long bitboard, int n) {
         return (n < 64 ? bitboard << n : bitboard >>> n);
     }
+
+
+    /**
+     * Removes a single bit from a bitboard.
+     *
+     * @param bitboard      Bitboard
+     * @param index         Bit index
+     * @return              New bitboard
+     */
+    public static final long remove(long bitboard, int index) {
+        final long mask = (1L << index) - 1;
+        final long upper = (bitboard & ~mask) >>> 1;
+        final long lower = (bitboard & mask);
+        return upper | lower;
+    }
+
+
+    /**
+     * Inserts a single bit on a bitboard.
+     *
+     * @param bitboard      Bitboard
+     * @param index         Bit index
+     * @return              New bitboard
+     */
+    public static final long insert(long bitboard, int index) {
+        final long mask = (1L << index) - 1;
+        final long upper = (bitboard & ~mask) << 1;
+        final long lower = (bitboard & mask);
+        return upper | lower;
+    }
 }
