@@ -145,9 +145,9 @@ public class LehmerHash implements HashFunction {
         int[] state = new int[length];
 
         for (int i = 0; i < length; i++) {
-            final long value = binomials[i];
-            state[i] = (int) (hash / value);
-            hash = hash % value;
+            final long base = binomials[i];
+            state[i] = (int) (hash / base);
+            hash = hash % base;
         }
 
         for (int i = length - 1; i >= 0; i--) {
