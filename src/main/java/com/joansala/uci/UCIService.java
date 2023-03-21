@@ -130,6 +130,7 @@ public class UCIService {
         commands.put(STOP, new StopCommand());
         commands.put(UCI, new IdentifyCommand());
         commands.put(UCINEWGAME, new NewGameCommand());
+        commands.put(WAIT, new WaitCommand());
     }
 
 

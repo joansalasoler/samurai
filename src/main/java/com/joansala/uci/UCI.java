@@ -38,6 +38,7 @@ public class UCI {
     public static final String STOP =           "stop";
     public static final String UCI =            "uci";
     public static final String UCINEWGAME =     "ucinewgame";
+    public static final String WAIT =           "wait";
 
     // -------------------------------------------------------------------
     // Responses
