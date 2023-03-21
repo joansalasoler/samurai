@@ -22,6 +22,7 @@ import com.joansala.engine.Game;
 import com.joansala.engine.Roots;
 import com.joansala.uci.UCICommand;
 import com.joansala.uci.UCIService;
+import com.joansala.uci.game.UCIGame;
 import com.joansala.uci.util.Parameters;
 import com.joansala.uci.util.TimeManager;
 
@@ -37,6 +38,7 @@ public class NewGameCommand implements UCICommand {
                 "Engine is not ready");
         }
 
+        UCIGame game = service.getGame();
         Engine engine = service.getEngine();
         Roots<Game> roots = service.getRoots();
         TimeManager timeManager = service.getTimeManager();
@@ -45,9 +47,11 @@ public class NewGameCommand implements UCICommand {
             timeManager.newMatch();
             engine.newMatch();
             roots.newMatch();
+            game.newMatch();
         } else {
             timeManager.newMatch();
             engine.newMatch();
+            game.newMatch();
         }
     }
 }

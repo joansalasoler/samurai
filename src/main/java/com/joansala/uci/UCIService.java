@@ -30,6 +30,7 @@ import com.joansala.uci.util.Parameters;
 import com.joansala.uci.util.TimeManager;
 import com.joansala.uci.option.*;
 import com.joansala.uci.command.*;
+import com.joansala.uci.game.*;
 import com.joansala.engine.*;
 import static com.joansala.uci.UCI.*;
 
@@ -48,6 +49,15 @@ public class UCIService {
     /** Thread where the computations are performed */
     private UCIBrain brain;
 
+    /** Game where searches are performed */
+    private UCIGame game;
+
+    /** Endgames database */
+    private UCILeaves leaves;
+
+    /** Transpositions table */
+    private UCICache cache;
+
     /** Search time manager */
     private TimeManager timeManager;
 
@@ -57,17 +67,8 @@ public class UCIService {
     /** Default start board of the game */
     private Board board;
 
-    /** Game where searches are performed */
-    private Game game;
-
     /** Openings book */
     private Roots<Game> roots;
-
-    /** Endgames database */
-    private Leaves<Game> leaves;
-
-    /** Transpositions table */
-    private Cache<Game> cache;
 
     /** Fallback openings book instance */
     private Roots<Game> baseRoots = new BaseRoots();
@@ -95,17 +96,17 @@ public class UCIService {
     public UCIService(Game game, Engine engine) {
         registerExceptionHandler();
 
+        this.game = new UCIGame(game);
         this.timeManager = new TimeManager();
         this.board = game.getBoard();
         this.engine = engine;
-        this.game = game;
 
         createOptions();
         createCommands();
         engine.setContempt(game.contempt());
         engine.setInfinity(game.infinity());
-        cache = baseCache;
-        leaves = baseLeaves;
+        cache = new UCICache(baseCache);
+        leaves = new UCILeaves(baseLeaves);
         roots = baseRoots;
 
         brain = new UCIBrain(this);
@@ -144,6 +145,7 @@ public class UCIService {
         options.put(USE_PONDER, new PonderOption());
         options.put(DRAW_SEARCH, new DrawSearchOption());
         options.put(ENGINE_TURN, new EngineTurnOption());
+        options.put(NOISE_LEVEL, new NoiseLevelOption());
     }
 
 
@@ -172,6 +174,30 @@ public class UCIService {
 
 
     /**
+     * Current game state.
+     */
+    public UCIGame getGame() {
+        return game;
+    }
+
+
+    /**
+     * Current engine tablebase instance.
+     */
+    public UCICache getCache() {
+        return cache;
+    }
+
+
+    /**
+     * Current endgames book instance.
+     */
+    public UCILeaves getLeaves() {
+        return leaves;
+    }
+
+
+    /**
      * Time manager of this service.
      */
     public TimeManager getTimeManager() {
@@ -196,34 +222,10 @@ public class UCIService {
 
 
     /**
-     * Current game state.
-     */
-    public Game getGame() {
-        return game;
-    }
-
-
-    /**
      * Current openings book instance.
      */
     public Roots<Game> getRoots() {
         return roots;
-    }
-
-
-    /**
-     * Current endgames book instance.
-     */
-    public Leaves<Game> getLeaves() {
-        return leaves;
-    }
-
-
-    /**
-     * Current engine tablebase instance.
-     */
-    public Cache<Game> getCache() {
-        return cache;
     }
 
 
@@ -263,7 +265,8 @@ public class UCIService {
     @Inject(optional=true)
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void setLeaves(Leaves leaves) {
-        this.leaves = (leaves != null) ? leaves : baseLeaves;
+        Leaves<Game> o = (leaves != null) ? leaves : baseLeaves;
+        this.leaves = new UCILeaves(o);
     }
 
 
@@ -275,7 +278,8 @@ public class UCIService {
     @Inject(optional=true)
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void setCache(Cache cache) {
-        this.cache = (cache != null) ? cache : baseCache;
+        Cache<Game> o = (cache != null) ? cache : baseCache;
+        this.cache = new UCICache(o);
     }
 
 

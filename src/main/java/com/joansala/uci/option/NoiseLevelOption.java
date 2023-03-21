@@ -1,7 +1,7 @@
 package com.joansala.uci.option;
 
 /*
- * Copyright (c) 2014-2021 Joan Sala Soler <contact@joansala.com>
+ * Copyright (c) 2023 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,35 +18,20 @@ package com.joansala.uci.option;
  */
 
 import com.joansala.uci.UCIService;
-import com.joansala.uci.game.UCILeaves;
-import com.joansala.uci.util.CheckOption;
+import com.joansala.uci.game.UCIGame;
+import com.joansala.uci.util.SpinOption;
 
 
 /**
- * If enabled the engine will use an endgames database.
+ * Adds random noise to the heuristic evaluations.
  */
-public class UseLeavesOption extends CheckOption {
-
-    /** Endgames database provided by the game module */
-    private UCILeaves leaves;
-
-    /** Whether the game module provides endgames */
-    private boolean enabled = false;
-
+public class NoiseLevelOption extends SpinOption {
 
     /**
      * Creates a new option instance.
      */
-    public UseLeavesOption() {
-        super(true);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean isEnabled() {
-        return enabled;
+    public NoiseLevelOption() {
+        super(0, 0, 0);
     }
 
 
@@ -54,16 +39,27 @@ public class UseLeavesOption extends CheckOption {
      * {@inheritDoc}
      */
     public void initialize(UCIService service) {
-        this.leaves = service.getLeaves();
-        this.enabled = !leaves.isBaseLeaves();
+        UCIGame game = service.getGame();
+        initializeRangeOfValues(game);
     }
 
 
     /**
      * {@inheritDoc}
      */
-    public void handle(UCIService service, boolean active) {
-        service.setLeaves(active ? leaves : null);
-        service.debug("Leaves are now " + (active ? "enabled" : "disabled"));
+    public void handle(UCIService service, int value) {
+        UCIGame game = service.getGame();
+        game.setNoiseLevel(value);
+        int level = game.getNoiseLevel();
+        service.debug("Noise level is now " + level);
+    }
+
+
+    /**
+     * Initialize the range of valid values for this option.
+     */
+    private void initializeRangeOfValues(UCIGame game) {
+        setFallback(game.getNoiseLevel());
+        setMaximum(game.infinity());
     }
 }

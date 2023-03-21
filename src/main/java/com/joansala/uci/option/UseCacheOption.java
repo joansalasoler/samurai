@@ -17,10 +17,8 @@ package com.joansala.uci.option;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.joansala.engine.Cache;
-import com.joansala.engine.Game;
-import com.joansala.engine.base.BaseCache;
 import com.joansala.uci.UCIService;
+import com.joansala.uci.game.UCICache;
 import com.joansala.uci.util.CheckOption;
 
 
@@ -30,7 +28,7 @@ import com.joansala.uci.util.CheckOption;
 public class UseCacheOption extends CheckOption {
 
     /** Transpositions table provided by the game module */
-    private Cache<Game> cache;
+    private UCICache cache;
 
     /** Whether the game module provides a transpositions table */
     private boolean enabled = false;
@@ -57,7 +55,7 @@ public class UseCacheOption extends CheckOption {
      */
     public void initialize(UCIService service) {
         this.cache = service.getCache();
-        this.enabled = (cache instanceof BaseCache == false);
+        this.enabled = !cache.isBaseCache();
     }
 
 

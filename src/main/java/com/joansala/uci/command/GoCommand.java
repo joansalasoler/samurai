@@ -115,9 +115,11 @@ public class GoCommand implements UCICommand {
 
         engine.setDepth(depth - 1);
         engine.setMoveTime(moveTime);
-        brain.startThinking(infinite);
 
+        service.debug("Search depth is " + depth + " plies");
         service.debug("Search time is " + moveTime + " ms");
+
+        brain.startThinking(infinite);
     }
 
 

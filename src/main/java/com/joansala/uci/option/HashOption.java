@@ -1,7 +1,7 @@
 package com.joansala.uci.option;
 
 /*
- * Copyright (c) 2014-2021 Joan Sala Soler <contact@joansala.com>
+ * Copyright (c) 2014-2023 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@ package com.joansala.uci.option;
 
 import com.joansala.engine.Cache;
 import com.joansala.engine.Game;
-import com.joansala.engine.base.BaseCache;
 import com.joansala.uci.UCIService;
+import com.joansala.uci.game.UCICache;
 import com.joansala.uci.util.SpinOption;
 
 
@@ -53,8 +53,8 @@ public class HashOption extends SpinOption {
      * {@inheritDoc}
      */
     public void initialize(UCIService service) {
-        Cache<Game> cache = service.getCache();
-        enabled = (cache instanceof BaseCache == false);
+        UCICache cache = service.getCache();
+        enabled = !cache.isBaseCache();
         if (enabled) initializeRangeOfValues(cache);
     }
 
@@ -63,7 +63,7 @@ public class HashOption extends SpinOption {
      * {@inheritDoc}
      */
     public void handle(UCIService service, int value) {
-        Cache<Game> cache = service.getCache();
+        UCICache cache = service.getCache();
         cache.resize(value << 20); // Size in bytes
         long size = cache.size() >> 20; // Size in megabytes
         service.debug("Cache size is now " + size + " MB");
@@ -71,7 +71,7 @@ public class HashOption extends SpinOption {
 
 
     /**
-     * Intitialize the range of option values according to the
+     * Initialize the range of option values according to the
      * available memory on the virtual machine.
      *
      * @param cache     Engine cache

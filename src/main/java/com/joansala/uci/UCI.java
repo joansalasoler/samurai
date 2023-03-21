@@ -111,6 +111,7 @@ public class UCI {
     public static final String ENGINE_TURN =    "EngineTurn";
     public static final String DRAW_SEARCH =    "DrawSearch";
     public static final String HASH_SIZE =      "Hash";
+    public static final String NOISE_LEVEL =    "NoiseLevel";
     public static final String USE_CACHE =      "UseCache";
     public static final String USE_LEAVES =     "UseLeaves";
     public static final String USE_PONDER =     "Ponder";
