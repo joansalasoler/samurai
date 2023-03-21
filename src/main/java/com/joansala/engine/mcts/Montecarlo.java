@@ -18,7 +18,7 @@ package com.joansala.engine.mcts;
  */
 
 import java.util.Random;
-
+import java.util.concurrent.ThreadLocalRandom;
 import com.joansala.engine.Game;
 import com.joansala.engine.uct.UCT;
 
@@ -35,7 +35,7 @@ public class Montecarlo extends UCT {
     public static final double DEFAULT_BIAS = 0.707;
 
     /** Random number generator */
-    private Random random = new Random();
+    private Random random = ThreadLocalRandom.current();
 
 
     /**
