@@ -18,6 +18,7 @@ package com.joansala.engine.sampler;
  */
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import com.joansala.engine.Game;
 import com.joansala.engine.base.BaseEngine;
 
@@ -28,7 +29,7 @@ import com.joansala.engine.base.BaseEngine;
 public class Sampler extends BaseEngine {
 
     /** Random number generator */
-    private Random random = new Random();
+    private Random random = ThreadLocalRandom.current();
 
     /** Best score found so far */
     private int bestScore = Integer.MAX_VALUE;
@@ -79,9 +80,11 @@ public class Sampler extends BaseEngine {
                 final int move = moves[i];
 
                 game.makeMove(move);
-                int value = simulateMatch(game, maxDepth - 1);
-                outcomes[i] += (value - outcome) / count;
+                int score = simulateMatch(game, maxDepth - 1);
                 game.unmakeMove();
+
+                int value = score * game.turn();
+                outcomes[i] += (value - outcome) / count;
             }
 
             if (count++ == Long.MAX_VALUE) {
@@ -123,13 +126,13 @@ public class Sampler extends BaseEngine {
             depth++;
         }
 
-        final int outcome = game.outcome();
+        final int score = game.outcome();
 
         for (int i = 0; i < depth; i++) {
             game.unmakeMove();
         }
 
-        return outcome;
+        return score;
     }
 
 
