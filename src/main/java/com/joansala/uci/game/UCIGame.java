@@ -108,6 +108,7 @@ public final class UCIGame extends WrapGame {
     private long nextRandomLong() {
         int size = Integer.numberOfLeadingZeros(game.infinity());
         long minValue = 1L << (3 * Integer.SIZE - size);
-        return random.nextLong(minValue, Long.MAX_VALUE);
+        long range = Long.MAX_VALUE - minValue;
+        return minValue + random.nextLong() % range;
     }
 }
