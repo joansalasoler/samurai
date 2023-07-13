@@ -224,13 +224,15 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         // Check for a hash move and reorder moves accordingly
 
         if (cache.find(game) && cache.getMove() != Game.NULL_MOVE) {
-            final int hashMove = cache.getMove();
+            if (leaves.find(game) == false) {
+                final int hashMove = cache.getMove();
 
-            for (int index = 0; index < 6; index++) {
-                if (rootMoves[index] == hashMove) {
-                    System.arraycopy(rootMoves, 0, rootMoves, 1, index);
-                    rootMoves[0] = hashMove;
-                    break;
+                for (int index = 0; index < 6; index++) {
+                    if (rootMoves[index] == hashMove) {
+                        System.arraycopy(rootMoves, 0, rootMoves, 1, index);
+                        rootMoves[0] = hashMove;
+                        break;
+                    }
                 }
             }
         }
