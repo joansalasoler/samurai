@@ -204,7 +204,7 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
     @Override
     public synchronized int computeBestMove(Game game) {
         // If the game ended on that position return a null move
-        // and set the best score acordingly
+        // and set the best score accordingly
 
         if (game.hasEnded()) {
             bestScore = -(game.outcome() * game.turn());
@@ -224,15 +224,13 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
         // Check for a hash move and reorder moves accordingly
 
         if (cache.find(game) && cache.getMove() != Game.NULL_MOVE) {
-            if (leaves.find(game) == false) {
-                final int hashMove = cache.getMove();
+            final int hashMove = cache.getMove();
 
-                for (int index = 0; index < 6; index++) {
-                    if (rootMoves[index] == hashMove) {
-                        System.arraycopy(rootMoves, 0, rootMoves, 1, index);
-                        rootMoves[0] = hashMove;
-                        break;
-                    }
+            for (int index = 0; index < 6; index++) {
+                if (rootMoves[index] == hashMove) {
+                    System.arraycopy(rootMoves, 0, rootMoves, 1, index);
+                    rootMoves[0] = hashMove;
+                    break;
                 }
             }
         }

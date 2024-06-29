@@ -109,8 +109,6 @@ public interface Engine {
     void setInfinity(int score);
 
 
-
-
     /**
      * Set which turn the engine is playing.
      *
