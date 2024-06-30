@@ -13,6 +13,12 @@ Key Features:
 
 Forget the complexities of building an AI engine from scratch. Samurai empowers you to create sophisticated game engines with incredible ease. See https://github.com/joansalasoler/engines for reference implementations.
 
+Usage and Documentation
+=======================
+
+See the repository https://github.com/joansalasoler/engines for usage
+instructions.
+
 The Latest Version
 ==================
 
