@@ -28,10 +28,11 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import picocli.CommandLine.*;
 
-import com.joansala.engine.*;
-import com.joansala.util.bench.*;
+import com.joansala.cli.util.EngineType;
 import com.joansala.util.suites.Suite;
 import com.joansala.util.suites.SuiteReader;
+import com.joansala.engine.*;
+import com.joansala.util.bench.*;
 
 /**
  * Runs an engine benchmark.
@@ -42,6 +43,9 @@ import com.joansala.util.suites.SuiteReader;
   mixinStandardHelpOptions = true
 )
 public class BenchCommand implements Callable<Integer> {
+
+    /** Dependency injector */
+    private Injector injector;
 
     /** Statistics accumulator */
     private BenchStats stats;
@@ -60,6 +64,13 @@ public class BenchCommand implements Callable<Integer> {
 
     /** Decorated leaves instance */
     private BenchLeaves leaves;
+
+
+    @Option(
+      names = "--engine",
+      description = "Custom engine (${COMPLETION-CANDIDATES})"
+    )
+    private EngineType engineType = null;
 
     @Option(
       names = "--depth",
@@ -85,12 +96,7 @@ public class BenchCommand implements Callable<Integer> {
      * Creates a new service.
      */
     @Inject public BenchCommand(Injector injector) {
-        stats = injector.getInstance(BenchStats.class);
-        game = injector.getInstance(BenchGame.class);
-        parser = injector.getInstance(Board.class);
-        engine = injector.getInstance(Engine.class);
-        cache = getInstanceOrNull(injector, BenchCache.class);
-        leaves = getInstanceOrNull(injector, BenchLeaves.class);
+        this.injector = injector;
     }
 
 
@@ -98,9 +104,26 @@ public class BenchCommand implements Callable<Integer> {
      * {@inheritDoc}
      */
     @Override public Integer call() throws Exception {
+        stats = injector.getInstance(BenchStats.class);
+        game = injector.getInstance(BenchGame.class);
+        parser = injector.getInstance(Board.class);
+        cache = getInstanceOrNull(injector, BenchCache.class);
+        leaves = getInstanceOrNull(injector, BenchLeaves.class);
+        engine = getEngineInstance(engineType);
+
         setupEngine();
         runBenchmark();
         return 0;
+    }
+
+
+    /**
+     * Obtain an engine instance.
+     */
+    private Engine getEngineInstance(EngineType engineType) {
+        return (engineType instanceof EngineType) ?
+            injector.getInstance(engineType.getType()) :
+            injector.getInstance(Engine.class);
     }
 
 
