@@ -18,7 +18,9 @@ package com.joansala.engine.base;
  */
 
 import java.io.IOException;
+import java.io.File;
 import java.io.RandomAccessFile;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,14 +44,30 @@ public class BaseBook implements AutoCloseable {
 
 
     /**
+     * Open a book for the given file.
+     */
+    public BaseBook(String path) throws IOException {
+        this(getFile(path));
+    }
+
+
+    /**
      * Open a book for the given file path.
      */
-     public BaseBook(String path) throws IOException {
-         file = new RandomAccessFile(path, "r");
-         signature = readSignature();
-         headers = readHeaders();
-         offset = file.getFilePointer();
-     }
+    public BaseBook(File f) throws IOException {
+        file = new RandomAccessFile(f, "r");
+        signature = readSignature();
+        headers = readHeaders();
+        offset = file.getFilePointer();
+    }
+
+
+    /**
+     * Obtain a file for the given resource path.
+     */
+    private static File getFile(String path) throws IOException {
+        return Paths.get(path).toRealPath().toFile();
+    }
 
 
     /**

@@ -18,9 +18,12 @@ package com.joansala.book.uct;
  */
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
+
+import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
 import com.joansala.engine.Roots;
 import static com.joansala.engine.Game.*;
@@ -48,11 +51,19 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
+     * Create a book for the given file.
+     */
+     public UCTRoots(File file) throws IOException {
+         reader = new BookReader(file);
+     }
+
+
+    /**
      * Create a book for the given file path.
      */
-     public UCTRoots(String path) throws IOException {
-         reader = new BookReader(path);
-     }
+    public UCTRoots(String path) throws IOException {
+        reader = new BookReader(path);
+    }
 
 
     /**

@@ -3,7 +3,12 @@ package com.joansala.util.suites;
 import java.io.InputStream;
 import java.util.stream.Stream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Paths;
 
 
 /**
@@ -33,11 +38,35 @@ public class SuiteReader implements AutoCloseable {
 
 
     /**
+     * Reads game suites from a file.
+     */
+    public SuiteReader(String path) throws IOException {
+        this(getFile(path));
+    }
+
+
+    /**
+     * Reads game suites from a file.
+     */
+    public SuiteReader(File file) throws FileNotFoundException {
+        this(new FileInputStream(file));
+    }
+
+
+    /**
      * Reads game suites from an input stream.
      */
     public SuiteReader(InputStream source) {
         input = new InputStreamReader(source);
         reader = new BufferedReader(input);
+    }
+
+
+    /**
+     * Obtain a file for the given resource path.
+     */
+    private static File getFile(String path) throws IOException {
+        return Paths.get(path).toRealPath().toFile();
     }
 
 

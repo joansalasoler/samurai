@@ -18,8 +18,10 @@ package com.joansala.book.uct;
  */
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,15 +50,31 @@ public class BookReader implements Closeable {
 
 
     /**
+     * Open a book for the given file.
+     */
+    public BookReader(File f) throws IOException {
+        file = new RandomAccessFile(f, "r");
+        signature = readSignature();
+        headers = readHeaders();
+        offset = file.getFilePointer();
+        size = (file.length() - offset) / ENTRY_SIZE;
+    }
+
+
+    /**
      * Open a book for the given file path.
      */
      public BookReader(String path) throws IOException {
-         file = new RandomAccessFile(path, "r");
-         signature = readSignature();
-         headers = readHeaders();
-         offset = file.getFilePointer();
-         size = (file.length() - offset) / ENTRY_SIZE;
+         this(getFile(path));
      }
+
+
+    /**
+     * Obtain a file for the given resource path.
+     */
+    private static File getFile(String path) throws IOException {
+        return Paths.get(path).toRealPath().toFile();
+    }
 
 
     /**
