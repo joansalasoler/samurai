@@ -2,6 +2,9 @@ package com.joansala.util.suites;
 
 import java.io.InputStream;
 import java.util.stream.Stream;
+
+import com.joansala.util.Settings;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +44,7 @@ public class SuiteReader implements AutoCloseable {
      * Reads game suites from a file.
      */
     public SuiteReader(String path) throws IOException {
-        this(getFile(path));
+        this(Settings.getFile(path));
     }
 
 
@@ -59,14 +62,6 @@ public class SuiteReader implements AutoCloseable {
     public SuiteReader(InputStream source) {
         input = new InputStreamReader(source);
         reader = new BufferedReader(input);
-    }
-
-
-    /**
-     * Obtain a file for the given resource path.
-     */
-    private static File getFile(String path) throws IOException {
-        return Paths.get(path).toRealPath().toFile();
     }
 
 

@@ -24,7 +24,12 @@ import com.google.inject.AbstractModule;
 
 
 /**
- * Base game module.
+ * Abstract base class for all game modules in the Samurai framework.
+ *
+ * This class extends {@link AbstractModule}, which is part of the Guice
+ * dependency injection framework. Guice modules are used to configure
+ * bindings between interfaces and their implementations, allowing for
+ * dependency injection throughout the application.
  */
 public abstract class BaseModule extends AbstractModule {
 
@@ -33,7 +38,10 @@ public abstract class BaseModule extends AbstractModule {
 
 
     /**
-     * Module service command line parameters.
+     * Constructs the command line parameters needed to start this
+     * module's UCI protocol service.
+     *
+     * @return an array of command line parameters
      */
     public String[] getServiceParameters() {
         String main = getClass().getName();

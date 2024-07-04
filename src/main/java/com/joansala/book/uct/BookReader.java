@@ -21,10 +21,9 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-
+import com.joansala.util.Settings;
 import static com.joansala.book.uct.BookEntry.*;
 
 
@@ -65,16 +64,8 @@ public class BookReader implements Closeable {
      * Open a book for the given file path.
      */
      public BookReader(String path) throws IOException {
-         this(getFile(path));
+         this(Settings.getFile(path));
      }
-
-
-    /**
-     * Obtain a file for the given resource path.
-     */
-    private static File getFile(String path) throws IOException {
-        return Paths.get(path).toRealPath().toFile();
-    }
 
 
     /**

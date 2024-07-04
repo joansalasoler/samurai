@@ -21,10 +21,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+import com.joansala.util.Settings;
 
 
 /**
@@ -61,15 +61,7 @@ public class BookWriter implements Closeable {
      * @param path          Path to a file
      */
     public BookWriter(String path) throws IOException {
-        this(getFile(path));
-    }
-
-
-    /**
-     * Obtain a file for the given resource path.
-     */
-    private static File getFile(String path) throws IOException {
-        return Paths.get(path).toRealPath().toFile();
+        this(Settings.getFile(path));
     }
 
 

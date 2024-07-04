@@ -38,6 +38,8 @@ import com.joansala.cli.util.ProcessConverter;
 import com.joansala.uci.UCIClient;
 import com.joansala.uci.UCICommand;
 import com.joansala.uci.UCIService;
+import com.joansala.util.Settings;
+
 import static com.joansala.uci.UCI.*;
 
 
@@ -164,9 +166,9 @@ public class ShellCommand implements Callable<Integer> {
      * @param writer    Terminal writer
      */
     private void printWelcome(PrintWriter writer) {
-        Package pack = UCIClient.class.getPackage();
-        String version = pack.getImplementationVersion();
-        writer.format("UCI Interpreter %s%n", version);
+        String name = Settings.getEngineName();
+        String version = Settings.getEngineVersion();
+        writer.format("UCI Shell %s %s%n", name, version);
         writer.format("Type UCI commands to send them to the engine.%n%n");
     }
 

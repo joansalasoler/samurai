@@ -36,6 +36,7 @@ import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
 import com.joansala.cli.util.ProcessConverter;
 import com.joansala.uci.UCIPlayer;
+import com.joansala.util.Settings;
 import com.joansala.util.StopWatch;
 
 
@@ -301,11 +302,11 @@ public class MatchCommand implements Callable<Integer> {
      * Prints a welcome message to the console.
      */
     private void printWelcome(PrintWriter writer) {
-        String name = player.getClient().getName();
-        Package pack = UCIPlayer.class.getPackage();
-        String version = pack.getImplementationVersion();
-        writer.format("UCI Match %s%n", version);
-        writer.format("Playing against %s%n", name);
+        String name = Settings.getEngineName();
+        String version = Settings.getEngineVersion();
+        String playerName = player.getClient().getName();
+        writer.format("UCI Match %s %s%n", name, version);
+        writer.format("Playing against %s%n", playerName);
     }
 
 

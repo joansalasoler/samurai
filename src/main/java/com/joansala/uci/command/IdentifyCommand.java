@@ -20,6 +20,8 @@ package com.joansala.uci.command;
 import com.joansala.uci.UCICommand;
 import com.joansala.uci.UCIService;
 import com.joansala.uci.util.Parameters;
+import com.joansala.util.Settings;
+
 import static com.joansala.uci.UCI.*;
 
 
@@ -44,11 +46,9 @@ public class IdentifyCommand implements UCICommand {
      * @param service       UCI service
      */
     private void sendIdentification(UCIService service) {
-        Package pack = service.getClass().getPackage();
-
-        String title = pack.getImplementationTitle();
-        String version = pack.getImplementationVersion();
-        String vendor = pack.getImplementationVendor();
+        String title = Settings.getEngineName();
+        String version = Settings.getEngineVersion();
+        String vendor = Settings.getEngineAuthor();
 
         String name = getValueOrDefault(title, "Unnamed engine");
         String author = getValueOrDefault(vendor, "Unknown author");
