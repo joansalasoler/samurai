@@ -68,9 +68,9 @@ public class BenchCommand implements Callable<Integer> {
 
     @Option(
       names = "--engine",
-      description = "Custom engine (${COMPLETION-CANDIDATES})"
+      description = "Custom engine (multiple) (${COMPLETION-CANDIDATES})"
     )
-    private EngineType engineType = null;
+    private EngineType[] engineTypes = null;
 
     @Option(
       names = "--depth",
@@ -109,10 +109,21 @@ public class BenchCommand implements Callable<Integer> {
         parser = injector.getInstance(Board.class);
         cache = getInstanceOrNull(injector, BenchCache.class);
         leaves = getInstanceOrNull(injector, BenchLeaves.class);
-        engine = getEngineInstance(engineType);
 
-        setupEngine();
-        runBenchmark();
+        if (engineTypes != null && engineTypes.length > 0) {
+            for (EngineType engineType : engineTypes) {
+                engine = getEngineInstance(engineType);
+                setupEngine();
+                runBenchmark();
+            }
+        } else {
+            engine = getEngineInstance(null);
+            setupEngine();
+            runBenchmark();
+        }
+
+        System.out.format("%s", formatStats());
+
         return 0;
     }
 
@@ -166,7 +177,7 @@ public class BenchCommand implements Callable<Integer> {
             System.exit(1);
         }
 
-        System.out.format("%n%s", formatStats());
+        System.out.println();
     }
 
 
