@@ -230,10 +230,13 @@ public class UCIBrain extends Thread {
             return;
         }
 
-        // Output legal moves if debug is enabled
+        // Output legal moves and score if debug is enabled
 
         if (service.getDebug() == true) {
+            int score = game.score();
+            int centis = game.turn() * game.toCentiPawns(score);
             service.debug(MOVES, getLegalMovesNotation(game));
+            service.debug(SCORE, CENTIPAWNS, centis, "value", score);
         }
 
         // Pick a move from the book or engine
