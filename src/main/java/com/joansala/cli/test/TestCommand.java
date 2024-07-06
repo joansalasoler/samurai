@@ -29,6 +29,7 @@ import picocli.CommandLine.*;
   description = "Engine test utilities",
   mixinStandardHelpOptions = true,
   subcommands = {
+      PlayCommand.class,
       BattleCommand.class,
       BenchCommand.class,
       DivideCommand.class,
