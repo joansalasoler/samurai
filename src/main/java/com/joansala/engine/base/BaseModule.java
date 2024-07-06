@@ -38,14 +38,20 @@ public abstract class BaseModule extends AbstractModule {
 
 
     /**
+     * Class name for this module.
+     */
+    public String getModuleClassName() {
+        return getClass().getName();
+    }
+
+
+    /**
      * Constructs the command line parameters needed to start this
      * module's UCI protocol service.
      *
      * @return an array of command line parameters
      */
     public String[] getServiceParameters() {
-        String main = getClass().getName();
-        String[] params = { main, "service" };
-        return params;
+        return new String[] { "service" };
     }
 }

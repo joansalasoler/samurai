@@ -305,9 +305,7 @@ public class MockGame implements Game {
      * {@inheritDoc}
      */
     @Override
-    public void ensureCapacity(int size) {
-        System.gc();
-    }
+    public void ensureCapacity(int size) {}
 
 
     /**

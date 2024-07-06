@@ -1,0 +1,198 @@
+[
+    {
+        "name": "com.joansala.uci.UCIClient",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.uci.UCIPlayer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.uci.UCIService",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.util.bench.BenchStats",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.util.bench.BenchGame",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.util.bench.BenchCache",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.util.bench.BenchLeaves",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.util.bench.BenchPlayer",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.mindless.Mindless",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.mcts.Montecarlo",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.negamax.Negamax",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.partner.Partner",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.sampler.Sampler",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.engine.uct.UCT",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.book.uct.UCTRoots",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.cache.GameCache",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "com.joansala.book.random.RandomRoots",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true
+    },
+    {
+        "name": "java.lang.Boolean",
+        "methods": [
+            {
+                "name": "parseBoolean",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Byte",
+        "methods": [
+            {
+                "name": "parseByte",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Double",
+        "methods": [
+            {
+                "name": "parseDouble",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Float",
+        "methods": [
+            {
+                "name": "parseFloat",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Integer",
+        "methods": [
+            {
+                "name": "parseInt",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Long",
+        "methods": [
+            {
+                "name": "parseLong",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "java.lang.Short",
+        "methods": [
+            {
+                "name": "parseShort",
+                "parameterTypes": [
+                    "java.lang.String"
+                ]
+            }
+        ]
+    }
+]

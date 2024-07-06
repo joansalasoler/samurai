@@ -199,6 +199,8 @@ public class MatchCommand implements Callable<Integer> {
                 printBoard(writer);
                 printWinner(writer);
             }
+        } catch (EndOfFileException e) {
+            writer.println("Keyboard interrupt.");
         } catch (UserInterruptException e) {
             writer.println("Keyboard interrupt.");
         } catch (Exception e) {

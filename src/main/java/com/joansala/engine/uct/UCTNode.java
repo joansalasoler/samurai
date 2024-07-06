@@ -40,19 +40,19 @@ public class UCTNode {
     private UCTNode sibling = null;
 
     /** Hash code of the node */
-    private long hash = 0x00;
+    private final long hash;
 
     /** Player to move on this node */
-    private int turn = Game.SOUTH;
+    private final int turn;
 
     /** Performed move to reach the node */
-    private int move = Game.NULL_MOVE;
+    private final int move;
+
+    /** Initial move generation cursor */
+    private final int reset;
 
     /** Current move generation cursor */
     private int cursor = Game.NULL_MOVE;
-
-    /** Initial move generation cursor */
-    private int reset = Game.NULL_MOVE;
 
     /** Whether it is fully expanded */
     private boolean expanded = false;

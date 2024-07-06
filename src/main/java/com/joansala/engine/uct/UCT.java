@@ -160,7 +160,6 @@ public class UCT extends BaseEngine implements HasLeaves {
     public synchronized void newMatch() {
         super.newMatch();
         root = null;
-        System.gc();
     }
 
 
@@ -209,7 +208,6 @@ public class UCT extends BaseEngine implements HasLeaves {
 
         if (root.parent() != null) {
             root.parent().detachFromTree();
-            System.gc();
         }
 
         while (!aborted() || root.child() == null) {
@@ -547,8 +545,6 @@ public class UCT extends BaseEngine implements HasLeaves {
                     pruneChilds(root.parent(), root);
                 }
             }
-
-            System.gc();
         }
     }
 

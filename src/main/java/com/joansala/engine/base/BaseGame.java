@@ -324,7 +324,6 @@ public abstract class BaseGame implements Game {
             size = Math.max(size, capacity + Engine.DEFAULT_DEPTH);
             size = Math.min(Integer.MAX_VALUE, size);
             moves = Arrays.copyOf(moves, size);
-            System.gc();
         }
     }
 

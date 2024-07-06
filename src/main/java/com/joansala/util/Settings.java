@@ -21,7 +21,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.ProtectionDomain;
 import java.util.Properties;
 import java.util.logging.Logger;
 import picocli.CommandLine.IDefaultValueProvider;
@@ -88,18 +91,41 @@ public class Settings {
 
 
     /**
+     * Obtain the default value provider for the command line.
+     */
+    public static IDefaultValueProvider getDefaultsProvider() {
+        return new PropertiesDefaultProvider(properties);
+    }
+
+
+    /**
      * Obtain a file for the given resource path.
      */
     public static File getFile(String path) throws IOException {
+        try {
+            Path base = Paths.get(getEnginePath().toUri());
+            return base.resolve(path).toRealPath().toFile();
+        } catch (Exception e) {
+            // Ignore
+        }
+
         return Paths.get(path).toRealPath().toFile();
     }
 
 
     /**
-     * Obtain the default value provider for the command line.
+     * Check if the application is running under native-image mode.
+     *
+     * @return          True if running under native-image mode
      */
-    public static IDefaultValueProvider getDefaultsProvider() {
-        return new PropertiesDefaultProvider(properties);
+    public static boolean isNativeImage() {
+        try {
+            String className = "org.graalvm.nativeimage.ImageInfo";
+            Class<?> c = Class.forName(className);
+            return (boolean) c.getMethod("isExecutable").invoke(null);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
@@ -114,5 +140,38 @@ public class Settings {
         } catch (Exception e) {
             logger.warning("Cannot load settings: " + path);
         }
+    }
+
+
+    /**
+     * Path where the engine is located.
+     *
+     * @return          Path of the engine executable or jar file
+     */
+    public static Path getEnginePath() throws Exception {
+        return isNativeImage() ? getExeFolder() : getJarFolder();
+    }
+
+
+    /**
+     * Path where the engine jar file is located.
+     *
+     * @return          Path of the engine jar file
+     */
+    private static Path getJarFolder() throws Exception {
+        ProtectionDomain domain = Settings.class.getProtectionDomain();
+        URI uri = domain.getCodeSource().getLocation().toURI();
+        return Paths.get(uri).toRealPath().getParent();
+    }
+
+
+    /**
+     * Path where the engine executable is located.
+     *
+     * @return          Path of the engine executable
+     */
+    private static Path getExeFolder() throws Exception {
+        String command = System.getenv("_");
+        return Paths.get(command).toRealPath().getParent();
     }
 }

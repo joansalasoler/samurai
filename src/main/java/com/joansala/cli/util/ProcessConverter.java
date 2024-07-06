@@ -18,16 +18,23 @@ package com.joansala.cli.util;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
+
 import picocli.CommandLine.ITypeConverter;
 import com.joansala.cli.MainCommand;
 import com.joansala.engine.base.BaseModule;
+import com.joansala.util.Settings;
 
 
 /**
  * Convert a command string to a process instance.
  */
 public class ProcessConverter implements ITypeConverter<Process> {
+
+    /** Module logger instance */
+    protected static Logger logger = Logger.getLogger("com.joansala");
 
     /** Default command string */
     public static final String DEFAULT = "<default>";
@@ -38,7 +45,27 @@ public class ProcessConverter implements ITypeConverter<Process> {
      *
      * @return          Command descriptor
      */
-    private String[] getDefaultCommand() {
+    private String[] getDefaultNativeCommand() throws IOException {
+        BaseModule module = MainCommand.getCurrentModule();
+
+        String bin = System.getenv("_");
+        String command = Paths.get(bin).toRealPath().toString();
+        String[] params = module.getServiceParameters();
+
+        String[] result = new String[1 + params.length];
+        System.arraycopy(params, 0, result, 1, params.length);
+        result[0] = command;
+
+        return result;
+    }
+
+
+    /**
+     * Builds a command to run the UCI service on the JVM.
+     *
+     * @return          Command descriptor
+     */
+    private String[] getDefaultJVMCommand() {
         BaseModule module = MainCommand.getCurrentModule();
 
         String home = System.getProperty("java.home");
@@ -47,10 +74,12 @@ public class ProcessConverter implements ITypeConverter<Process> {
 
         String[] command = { bin, "-cp", path };
         String[] params = module.getServiceParameters();
+        String className = module.getModuleClassName();
 
-        String[] result = new String[command.length + params.length];
+        String[] result = new String[1 + command.length + params.length];
         System.arraycopy(command, 0, result, 0, command.length);
-        System.arraycopy(params, 0, result, command.length, params.length);
+        System.arraycopy(params, 0, result, 1 + command.length, params.length);
+        result[command.length] = className;
 
         return result;
     }
@@ -61,9 +90,18 @@ public class ProcessConverter implements ITypeConverter<Process> {
      *
      * @return          Command descriptor
      */
-    private String[] getCommandFromPath(String path) {
-        return DEFAULT.equals(path) ?
-            getDefaultCommand() : path.split("\\s+");
+    private String[] getCommandFromPath(String path) throws IOException {
+        String[] command = null;
+
+        if (!DEFAULT.equals(path)) {
+            command = path.split("\\s+");
+        } else if (Settings.isNativeImage()) {
+            command = getDefaultNativeCommand();
+        } else {
+            command = getDefaultJVMCommand();
+        }
+
+        return command;
     }
 
 

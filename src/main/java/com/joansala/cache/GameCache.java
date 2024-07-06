@@ -192,7 +192,6 @@ public class GameCache implements Cache<Game> {
             store = new long[capacity];
             entries = (capacity >> 1) - 1;
             entry = 0x00L;
-            System.gc();
         }
     }
 
