@@ -43,22 +43,6 @@ public class Suite {
 
 
     /**
-     * Converts a {@code Game} object to a {@code Suite}.
-     *
-     * @param game      Game state to convert
-     * @return          New game suite
-     */
-    public static Suite fromGame(Game game) {
-        int[] moves = game.moves();
-        Board board = game.getBoard();
-        String diagram = board.toDiagram();
-        String notation = board.toNotation(moves);
-
-        return new Suite(diagram, notation);
-    }
-
-
-    /**
      * Start board diagram.
      */
     public String diagram() {
@@ -75,11 +59,48 @@ public class Suite {
 
 
     /**
+     * Setup a game with the board and moves of this suite.
+     *
+     * @param game      A game object
+     */
+    public void setupGame(Game game) {
+        Board parser = game.getBoard();
+        Board board = parser.toBoard(diagram());
+        int[] moves = board.toMoves(notation());
+
+        game.setBoard(board);
+        game.ensureCapacity(1 + moves.length);
+
+        for (int move : moves) {
+            if (game.hasEnded() == false) {
+                game.makeMove(move);
+            }
+        }
+    }
+
+
+    /**
+     * Converts a {@code Game} object to a {@code Suite}.
+     *
+     * @param game      Game state to convert
+     * @return          New game suite
+     */
+    public static Suite fromGame(Game game) {
+        int[] moves = game.moves();
+        Board board = game.getBoard();
+        String diagram = board.toDiagram();
+        String notation = board.toNotation(moves);
+
+        return new Suite(diagram, notation);
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return notation.isEmpty() == false ?
+        return notation.isBlank() == false ?
             String.format("%s moves %s", diagram, notation) :
             String.format("%s", diagram);
     }
