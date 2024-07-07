@@ -55,6 +55,12 @@ public class RandomCommand implements Callable<Integer> {
     private int maxDepth = Engine.DEFAULT_DEPTH;
 
     @Option(
+      names = "--diagram",
+      description = "Print only the last position diagram"
+    )
+    private boolean diagramOnly = false;
+
+    @Option(
       names = "--endgame",
       description = "Play until the game ends"
     )
@@ -82,7 +88,8 @@ public class RandomCommand implements Callable<Integer> {
     @Override public Integer call() throws Exception {
         for (int i = 0; i < size; i++) {
             Suite suite = generateSuite(rootBoard, game);
-            System.out.println(suite);
+            String diagram = game.toBoard().toDiagram();
+            System.out.println(diagramOnly ? diagram : suite);
         }
 
         return 0;

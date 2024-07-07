@@ -23,13 +23,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.StringJoiner;
 import com.google.inject.Inject;
 import picocli.CommandLine.*;
 
 import com.joansala.engine.*;
 import com.joansala.util.bench.*;
-import com.joansala.util.suites.Suite;
 import com.joansala.util.suites.SuiteReader;
 
 
@@ -103,22 +101,11 @@ public class DivideCommand implements Callable<Integer> {
 
             try (SuiteReader reader = new SuiteReader(input)) {
                 reader.stream().forEach((suite) -> {
-                    String format = formatSuite(suite);
-                    System.out.format("%n%s%n", ellipsis(format, 59));
+                    System.out.format("%n%s%n", ellipsis(suite, 59));
                     System.out.format("%s%n", horizontalRule('-'));
 
-                    Board board = parser.toBoard(suite.diagram());
-                    int[] moves = board.toMoves(suite.notation());
-
-                    game.setBoard(board);
-                    game.ensureCapacity(moves.length + depth);
-
-                    for (int move : moves) {
-                        if (game.hasEnded() == false) {
-                            game.makeMove(move);
-                        }
-                    }
-
+                    suite.setupGame(game);
+                    game.ensureCapacity(depth + game.length());
                     benchmark(game, depth - 1);
                 });
             } catch (Exception e) {
@@ -216,22 +203,6 @@ public class DivideCommand implements Callable<Integer> {
             horizontalRule('-'),
             stats.visits().count()
         );
-    }
-
-
-    /**
-     * String representation of a game suite.
-     */
-    private static String formatSuite(Suite suite) {
-        StringJoiner joiner = new StringJoiner(" ");
-
-        if (!suite.notation().isBlank()) {
-            joiner.add(suite.notation());
-        }
-
-        joiner.add(suite.diagram());
-
-        return joiner.toString();
     }
 
 

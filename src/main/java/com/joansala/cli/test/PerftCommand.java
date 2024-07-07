@@ -23,13 +23,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.StringJoiner;
 import com.google.inject.Inject;
 import picocli.CommandLine.*;
 
 import com.joansala.engine.*;
 import com.joansala.util.bench.*;
-import com.joansala.util.suites.Suite;
 import com.joansala.util.suites.SuiteReader;
 import static com.joansala.engine.Game.NULL_MOVE;
 
@@ -111,23 +109,12 @@ public class PerftCommand implements Callable<Integer> {
 
             try (SuiteReader reader = new SuiteReader(input)) {
                 reader.stream().forEach((suite) -> {
-                    String format = formatSuite(suite);
-                    System.out.format("%n%s%n", ellipsis(format, 59));
+                    System.out.format("%n%s%n", ellipsis(suite, 59));
                     System.out.format("%s%n", horizontalRule('-'));
                     System.out.format("%s%n", formatHeader());
 
-                    Board board = parser.toBoard(suite.diagram());
-                    int[] moves = board.toMoves(suite.notation());
-
-                    game.setBoard(board);
-                    game.ensureCapacity(1 + moves.length + maxDepth);
-
-                    for (int move : moves) {
-                        if (game.hasEnded() == false) {
-                            game.makeMove(move);
-                        }
-                    }
-
+                    suite.setupGame(game);
+                    game.ensureCapacity(1 + maxDepth + game.length());
                     benchmark(game, minDepth, maxDepth);
                 });
             } catch (Exception e) {
@@ -257,22 +244,6 @@ public class PerftCommand implements Callable<Integer> {
             stats.visitsPerSecond(),
             stats.visits().count()
         );
-    }
-
-
-    /**
-     * String representation of a game suite.
-     */
-    private static String formatSuite(Suite suite) {
-        StringJoiner joiner = new StringJoiner(" ");
-
-        if (!suite.notation().isBlank()) {
-            joiner.add(suite.notation());
-        }
-
-        joiner.add(suite.diagram());
-
-        return joiner.toString();
     }
 
 
