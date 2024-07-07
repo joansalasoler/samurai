@@ -30,7 +30,8 @@ import picocli.CommandLine.*;
   mixinStandardHelpOptions = true,
   subcommands = {
     ShowCommand.class,
-    RandomCommand.class
+    RandomCommand.class,
+    ScoreCommand.class,
   }
 )
 public class SuiteCommand {}
