@@ -276,7 +276,13 @@ public interface Game {
      * score if the other player wins, or {@code DRAW_SCORE} if the game
      * is a draw or hasn't ended yet.
      *
+     * This method can return a score different from the maximum possible
+     * score to push the engine away from certain choices (like branches
+     * that end in move repetitions). However, this also means the
+     * engine will need to consider more options to find the best one.
+     *
      * @see     Game#score
+     * @see     Game#infinity
      * @return  The utility evaluation value
      */
     int outcome();

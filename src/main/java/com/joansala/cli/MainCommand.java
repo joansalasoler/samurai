@@ -18,7 +18,6 @@ package com.joansala.cli;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- import java.io.File;
 import picocli.CommandLine;
 import picocli.CommandLine.*;
 import com.joansala.engine.base.BaseModule;
