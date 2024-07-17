@@ -22,7 +22,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -31,6 +38,7 @@ import picocli.CommandLine.*;
 import com.joansala.cli.util.EngineType;
 import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
+import com.joansala.util.suites.Suite;
 import com.joansala.util.suites.SuiteReader;
 
 
@@ -46,12 +54,6 @@ public class ScoreCommand implements Callable<Integer> {
 
     /** Dependency injector */
     private Injector injector;
-
-    /** Game instance */
-    private Game game;
-
-    /** Engine to benchmark */
-    private Engine engine;
 
     @Option(
       names = "--file",
@@ -77,6 +79,12 @@ public class ScoreCommand implements Callable<Integer> {
     )
     private long moveTime = Engine.DEFAULT_MOVETIME;
 
+    @Option(
+      names = "--threads",
+      description = "Size of the evaluation thread pool"
+    )
+    private int poolSize = Runtime.getRuntime().availableProcessors();
+
 
     /**
      *
@@ -90,12 +98,7 @@ public class ScoreCommand implements Callable<Integer> {
      * {@inheritDoc}
      */
     @Override public Integer call() throws Exception {
-        game = injector.getInstance(Game.class);
-        engine = getEngineInstance(engineType);
-
-        setupEngine(engine);
         computeScores();
-
         return 0;
     }
 
@@ -105,19 +108,42 @@ public class ScoreCommand implements Callable<Integer> {
      */
     public void computeScores() throws IOException {
         InputStream input = new FileInputStream(file);
+        Executor executor = new Executor(poolSize);
+        BlockingQueue<Evaluator> tasks = new ArrayBlockingQueue<>(poolSize);
+
+        for (int i = 0; i < poolSize; i++) {
+            tasks.add(new Evaluator());
+        }
 
         try (SuiteReader reader = new SuiteReader(input)) {
-            reader.stream().forEach((suite) -> {
-                engine.newMatch();
-                suite.setupGame(game);
-                String diagram = game.toBoard().toDiagram();
-                int score = engine.computeBestScore(game);
-                System.out.format("%d, %s%n", score, diagram);
-            });
+            reader.stream().forEach((suite) -> executor.submit(() -> {
+                try{
+                    Evaluator task = tasks.take();
+                    task.evaluateSuite(suite);
+                    tasks.put(task);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new IllegalStateException(e);
+                }
+            }));
         } catch (Exception e) {
             e.printStackTrace();
+            executor.shutdown();
             System.exit(1);
         }
+
+        executor.shutdown();
+    }
+
+
+    /**
+     * Configures the engine to be benchmarked.
+     */
+    private void setupEngine(Engine engine, Game game) {
+        engine.setContempt(game.contempt());
+        engine.setInfinity(game.infinity());
+        engine.setMoveTime(moveTime);
+        engine.setDepth(depth);
     }
 
 
@@ -132,12 +158,81 @@ public class ScoreCommand implements Callable<Integer> {
 
 
     /**
-     * Configures the engine to be benchmarked.
+     * Evaluates a game states using an engine.
      */
-    private void setupEngine(Engine engine) {
-        engine.setContempt(game.contempt());
-        engine.setInfinity(game.infinity());
-        engine.setMoveTime(moveTime);
-        engine.setDepth(depth);
+    private class Evaluator {
+
+        private Game game;
+        private Engine engine;
+
+
+        private Evaluator() {
+            game = injector.getInstance(Game.class);
+            engine = getEngineInstance(engineType);
+            setupEngine(engine, game);
+        }
+
+
+        /**
+         * Compute the best score for a state.
+         */
+        private void evaluateSuite(Suite suite) {
+            engine.newMatch();
+            suite.setupGame(game);
+            String diagram = game.toBoard().toDiagram();
+            int score = game.turn() * engine.computeBestScore(game);
+            System.out.format("%s, %d%n", diagram, score);
+        }
+    }
+
+
+    /**
+     * Executes tasks in a fixed thread pool.
+     */
+    public class Executor {
+
+        private final Semaphore semaphore;
+        private final ExecutorService executor;
+
+
+        private Executor(int poolSize) {
+            executor = Executors.newFixedThreadPool(poolSize);
+            semaphore = new Semaphore(poolSize);
+        }
+
+
+        /**
+         * Submit a task for execution.
+         */
+        public void submit(Runnable task) {
+            try {
+                semaphore.acquire();
+                executor.submit(() -> {
+                    task.run();
+                    semaphore.release();
+                });
+            } catch (InterruptedException e) {
+                semaphore.release();
+            }
+        }
+
+
+        /**
+         * Shutdown this executor and await termination.
+         */
+        public void shutdown() {
+            try {
+                executor.shutdown();
+
+                long waitTime = 2 * poolSize * moveTime;
+                TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+
+                if (!executor.awaitTermination(waitTime, timeUnit)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+            }
+        }
     }
 }

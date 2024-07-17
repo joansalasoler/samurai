@@ -67,6 +67,12 @@ public class RandomCommand implements Callable<Integer> {
     private boolean endGame = false;
 
     @Option(
+        names = "--middlegame",
+        description = "Output only middlegame matches"
+      )
+      private boolean middleGame = false;
+
+    @Option(
       names = "--size",
       description = "Number of suites to generate"
     )
@@ -111,6 +117,11 @@ public class RandomCommand implements Callable<Integer> {
             game.ensureCapacity(1 + game.length());
             game.makeMove(move);
             depth++;
+        }
+
+        if (middleGame && game.hasEnded()) {
+            int size = random.nextInt((int) (0.8 * game.length()));
+            game.unmakeMoves(1 + size);
         }
 
         return Suite.fromGame(game);
