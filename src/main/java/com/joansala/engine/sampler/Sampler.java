@@ -25,6 +25,11 @@ import com.joansala.engine.base.BaseEngine;
 
 /**
  * An engine that chooses the best move by random sampling.
+ *
+ * This is not a MCTS algorithm, but uses a simplified Monte-Carlo
+ * method to estimate the outcome of a game. It is useful as a baseline
+ * to compare the performance of other algorithms. At each node, it
+ * plays randomly for a fixed number of moves and averages the outcome.
  */
 public class Sampler extends BaseEngine {
 
@@ -137,7 +142,11 @@ public class Sampler extends BaseEngine {
 
 
     /**
-     * Pick a random legal move given a game state.
+     * Selects a random move from the list of possible moves.
+     *
+     * Chooses a move using a variant of reservoir-sampling that works
+     * even without knowing the list length. It ensures each element
+     * has an equal chance of being chosen.
      *
      * @param game      Game state
      * @return          Chosen move

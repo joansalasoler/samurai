@@ -18,17 +18,19 @@ package com.joansala.engine.mindless;
  */
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 import com.joansala.engine.Game;
 import com.joansala.engine.base.BaseEngine;
 
 
 /**
- * An engine that plays random moves.
+ * An engine that chooses the best move by pure random chance.
  */
 public class Mindless extends BaseEngine {
 
     /** Random number generator */
-    private Random random = new Random();
+    private Random random = ThreadLocalRandom.current();
 
 
     /**

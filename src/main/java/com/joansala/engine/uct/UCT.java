@@ -26,10 +26,30 @@ import com.joansala.engine.base.*;
 
 
 /**
- * Best-first search using Upper Confidence Bounds (UCT).
+ * Monte Carlo Tree Search (MCTS) with Upper Confidence Bound applied
+ * to Trees (UCT).
  *
- * @author    Joan Sala Soler
- * @version   1.0.0
+ * This class implements the core MCTS algorithm using Upper Confidence
+ * Bounds (UCB1) for node selection. It builds a tree structure and
+ * evaluates the leaves (unexplored nodes) using a game specific
+ * heuristic function.
+ *
+ * The balance between exploration and exploitation can be controlled
+ * by adjusting the exploration bias factor, which is game dependent
+ * (see {@link #setExplorationBias(double)}). A lower bias value favors
+ * exploitation, focusing on nodes with higher average rewards.
+ * Conversely, a higher bias value encourages exploration of less-visited
+ * but potentially promising areas of the search space. With a good
+ * heuristic function a low exploration bias is preferable.
+ *
+ * This specific UCT variation propagates exact scores up the tree to
+ * the root node. This allows for more efficient pruning of less
+ * promising branches. Consequently, the best move selection isn't
+ * solely based on the number of visits (visit count) but on a
+ * confidence-based score. The chosen child node is the one with the
+ * demonstrably best score based on sufficient simulations. For
+ * alternative selection criteria, you can override the
+ * {@link #computeScore(UCTNode)} method.
  */
 public class UCT extends BaseEngine implements HasLeaves {
 

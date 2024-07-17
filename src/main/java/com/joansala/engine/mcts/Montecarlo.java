@@ -24,10 +24,12 @@ import com.joansala.engine.uct.UCT;
 
 
 /**
- * Implements a game engine using a MCTS algorithm.
+ * Monte Carlo Tree Search (MCTS) using random playouts.
  *
- * @author    Joan Sala Soler
- * @version   1.0.0
+ * This engine uses random simulations (playouts) to evaluate moves
+ * instead of an heuristic function. This can be advantageous if
+ * designing an heuristic function is difficult or there is a need to
+ * estimate the value of a position without prior human knowledge.
  */
 public class Montecarlo extends UCT {
 
@@ -70,7 +72,11 @@ public class Montecarlo extends UCT {
 
 
     /**
-     * Pick a random legal move given a game state.
+     * Selects a random move from the list of possible moves.
+     *
+     * Chooses a move using a variant of reservoir-sampling that works
+     * even without knowing the list length. It ensures each element
+     * has an equal chance of being chosen.
      *
      * @param game      Game state
      * @return          Chosen move

@@ -25,12 +25,18 @@ import com.joansala.engine.uct.UCTNode;
 
 
 /**
- * Cooperative MCTS algorithm.
+ * Cooperative Monte Carlo Tree Search (MCTS) using random playouts.
  *
- * This is a collaborative engine with random simulations were north always
- * selects its worst possible move while south selects its best. It requires
- * an utility function (outcome) that evaluates losses as draws, because a
- * loss by one player is also a loss for both players.
+ * This is a MCTS algorithm using random simulations designed for
+ * single-player games. It simulates two players (north and south)
+ * working together, but secretly trying to win. North always chooses
+ * the worst possible move. South always chooses the best possible move.
+ *
+ * The algorithm requires a utility function (outcome) that treats
+ * losses as draws. This is because in this single-player scenario, a
+ * loss for one player is considered a loss for both players.
+ *
+ * This algorithm can be seen in action in the GGP module.
  */
 public class Partner extends UCT {
 
@@ -82,7 +88,11 @@ public class Partner extends UCT {
 
 
     /**
-     * Pick a random legal move given a game state.
+     * Selects a random move from the list of possible moves.
+     *
+     * Chooses a move using a variant of reservoir-sampling that works
+     * even without knowing the list length. It ensures each element
+     * has an equal chance of being chosen.
      *
      * @param game      Game state
      * @return          Chosen move
