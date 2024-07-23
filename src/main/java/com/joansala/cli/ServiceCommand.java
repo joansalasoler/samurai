@@ -26,6 +26,8 @@ import picocli.CommandLine.*;
 import com.joansala.cli.util.EngineType;
 import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
+import com.joansala.engine.HasCache;
+import com.joansala.engine.HasLeaves;
 import com.joansala.engine.Roots;
 import com.joansala.uci.UCIService;
 
@@ -91,6 +93,16 @@ public class ServiceCommand implements Callable<Integer> {
             Roots<?> roots = injector.getInstance(Roots.class);
             service.setRoots(roots);
         } catch (Exception e) {}
+
+        if (engine instanceof HasCache) {
+            HasCache e = (HasCache) engine;
+            service.setCache(e.getCache());
+        }
+
+        if (engine instanceof HasLeaves) {
+            HasLeaves e = (HasLeaves) engine;
+            service.setLeaves(e.getLeaves());
+        }
 
         return service;
     }
