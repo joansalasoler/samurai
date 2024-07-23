@@ -28,7 +28,7 @@ import com.joansala.engine.Game;
 public class GameCache implements Cache<Game> {
 
     /** Default size of the cache in bytes */
-    public static final long DEFAULT_SIZE = 192L << 20;
+    public static final long DEFAULT_SIZE = 384L << 20;
 
     /** Minimum capacity in number of slots */
     public static final int MIN_CAPACITY = (1 << 24);
