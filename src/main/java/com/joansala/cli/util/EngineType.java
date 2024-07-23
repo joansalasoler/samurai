@@ -22,6 +22,7 @@ package com.joansala.cli.util;
 import com.joansala.engine.Engine;
 import com.joansala.engine.mcts.Montecarlo;
 import com.joansala.engine.mindless.Mindless;
+import com.joansala.engine.mtd.MTDf;
 import com.joansala.engine.negamax.Negamax;
 import com.joansala.engine.partner.Partner;
 import com.joansala.engine.sampler.Sampler;
@@ -38,6 +39,9 @@ public enum EngineType {
 
     /** An UCT engine with random simulations */
     MONTECARLO(Montecarlo.class),
+
+    /** A minimax engine wiht zero-window searches */
+    MTDF(MTDf.class),
 
     /** A minimax engine with alpha-beta pruning */
     NEGAMAX(Negamax.class),

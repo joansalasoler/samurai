@@ -54,13 +54,13 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
     protected Leaves<Game> leaves = null;
 
     /** The minimum possible score value */
-    private int minScore = -Integer.MAX_VALUE;
+    protected int minScore = -Integer.MAX_VALUE;
 
     /** Holds the best score found so far */
-    private int bestScore = Integer.MAX_VALUE;
+    protected int bestScore = Integer.MAX_VALUE;
 
     /** Depth of the last completed search */
-    private int scoreDepth = 0;
+    protected int scoreDepth = 0;
 
 
     /**
@@ -317,7 +317,7 @@ public class Negamax extends BaseEngine implements HasLeaves, HasCache {
      * @param beta      Propagated beta value
      * @param depth     Depth limit
      */
-    private int search(Game game, int alpha, int beta, int depth) {
+    protected int search(Game game, int alpha, int beta, int depth) {
         if (aborted() && depth > MIN_DEPTH) {
             return minScore;
         }
