@@ -82,6 +82,18 @@ public final class Bits {
 
 
     /**
+     * Check if all the given bits are set on a bitboard.
+     *
+     * @param bitboard      Bitboard to check
+     * @param bits          Bits to check
+     * @return              If all the bits are set
+     */
+    public static final boolean includes(long bitboard, long bits) {
+        return (bitboard & bits) == bits;
+    }
+
+
+    /**
      * Counts the number of stones on a bitboard.
      *
      * @param bitboard      Bitboard to count
