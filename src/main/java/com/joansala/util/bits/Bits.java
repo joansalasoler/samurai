@@ -160,4 +160,102 @@ public final class Bits {
         final long lower = (bitboard & mask);
         return upper | lower;
     }
+
+
+    /**
+     * Rotate 180 degrees an 8x8 bitboard.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long rotate(long bitboard) {
+        return Long.reverse(bitboard);
+    }
+
+
+    /**
+     * Rotate 90 degrees clockwise an 8x8 bitboard.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long rotate90(long bitboard) {
+        return mirrorX(transposeXY(bitboard));
+    }
+
+
+    /**
+     * Rotate 270 degrees clockwise an 8x8 bitboard.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long rotate270(long bitboard) {
+        return rotate(mirrorX(transposeXY(bitboard)));
+    }
+
+
+    /**
+     * Mirrors an 8x8 bitboard vertically.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long mirrorX(long bitboard) {
+        return Long.reverseBytes(bitboard);
+    }
+
+
+    /**
+     * Mirrors an 8x8 bitboard horizontally.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long mirrorY(long bitboard) {
+        final long K1 = 0x5555555555555555L;
+        final long K2 = 0x3333333333333333L;
+        final long K4 = 0x0f0f0f0f0f0f0f0fL;
+
+        bitboard = ((bitboard >> 1) & K1) +  2 * (bitboard & K1);
+        bitboard = ((bitboard >> 2) & K2) +  4 * (bitboard & K2);
+        bitboard = ((bitboard >> 4) & K4) + 16 * (bitboard & K4);
+
+        return bitboard;
+    }
+
+
+    /**
+     * Transpose an 8x8 bitboard along the secondary diagonal.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long transposeYX(long bitboard) {
+        return rotate(transposeXY(bitboard));
+    }
+
+
+    /**
+     * Transpose an 8x8 bitboard along the main diagonal.
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long transposeXY(long bitboard) {
+        final long K1 = 0x00AA00AA00AA00AAL;
+        final long K2 = 0x0000CCCC0000CCCCL;
+        final long K4 = 0x00000000F0F0F0F0L;
+
+        final long T1 = K1 & (bitboard ^ (bitboard >>> 7));
+        bitboard = bitboard ^ T1 ^ (T1 << 7);
+
+        final long T2 = K2 & (bitboard ^ (bitboard >>> 14));
+        bitboard = bitboard ^ T2 ^ (T2 << 14);
+
+        final long T4 = K4 & (bitboard ^ (bitboard >>> 28));
+        bitboard = bitboard ^ T4 ^ (T4 << 28);
+
+        return bitboard;
+    }
 }
