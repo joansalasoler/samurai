@@ -29,6 +29,7 @@ import com.joansala.engine.Game;
 import com.joansala.engine.HasCache;
 import com.joansala.engine.HasLeaves;
 import com.joansala.engine.Roots;
+import com.joansala.engine.uct.UCT;
 import com.joansala.uci.UCIService;
 
 
@@ -51,6 +52,12 @@ public class ServiceCommand implements Callable<Integer> {
       description = "Custom engine (${COMPLETION-CANDIDATES})"
     )
     private EngineType engineType = null;
+
+    @Option(
+      names = "--bias",
+      description = "Exploration bias factor (MCTS)"
+    )
+    private double bias = Integer.MIN_VALUE;
 
 
     /**
@@ -102,6 +109,11 @@ public class ServiceCommand implements Callable<Integer> {
         if (engine instanceof HasLeaves) {
             HasLeaves e = (HasLeaves) engine;
             service.setLeaves(e.getLeaves());
+        }
+
+        if (engine instanceof UCT && bias > Integer.MIN_VALUE) {
+            UCT e = (UCT) engine;
+            e.setExplorationBias(bias);
         }
 
         return service;
