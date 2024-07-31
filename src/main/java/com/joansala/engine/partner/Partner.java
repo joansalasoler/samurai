@@ -56,11 +56,41 @@ public class Partner extends UCT {
 
 
     /**
-     * {@inheritDoc}
+     * Best child found so far for the given node.
+     *
+     * @param node      Parent node
+     * @return          Child node
      */
     @Override
-    protected double computeScore(UCTNode node) {
-        return -node.turn() * super.computeScore(node);
+    protected UCTNode pickBestChild(UCTNode node) {
+        UCTNode child = node.child();
+        UCTNode bestChild = node.child();
+        double bestScore = computeScore(bestChild);
+
+        while ((child = child.sibling()) != null) {
+            double score = computeScore(child);
+
+            if (score < bestScore) {
+                bestScore = score;
+                bestChild = child;
+            }
+        }
+
+        return bestChild;
+    }
+
+
+    /**
+     * Compute the selection score of a node.
+     *
+     * @param node      A node
+     * @return          Score of the node
+     */
+    private double computeScore(UCTNode node) {
+        final double bound = maxScore / Math.sqrt(node.count());
+        final double score = node.score() + bound;
+
+        return -node.turn() * score;
     }
 
 

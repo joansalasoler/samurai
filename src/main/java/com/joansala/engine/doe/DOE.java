@@ -48,7 +48,7 @@ public class DOE extends BaseEngine {
     private Game game;
 
     /** Exploration bias parameter */
-    public double biasFactor = DEFAULT_BIAS;
+    public double exploreFactor = DEFAULT_BIAS;
 
     /** Exploration priority multiplier */
     private double bias = DEFAULT_BIAS * maxScore;
@@ -85,7 +85,7 @@ public class DOE extends BaseEngine {
     @Override
     public synchronized void setInfinity(int score) {
         super.setInfinity(score);
-        bias = biasFactor * maxScore;
+        bias = exploreFactor * maxScore;
     }
 
 
@@ -95,8 +95,8 @@ public class DOE extends BaseEngine {
      * @param factor    Exploration parameter
      */
     public synchronized void setExplorationBias(double factor) {
-        biasFactor = factor;
-        bias = biasFactor * maxScore;
+        exploreFactor = factor;
+        bias = exploreFactor * maxScore;
     }
 
 
@@ -233,7 +233,7 @@ public class DOE extends BaseEngine {
      * @param node      A node
      * @return          Score of the node
      */
-    private double computeScore(DOENode node) {
+    private double selectionScore(DOENode node) {
         final double bound = maxScore / Math.sqrt(node.count);
         final double score = node.score + bound;
 
@@ -250,10 +250,10 @@ public class DOE extends BaseEngine {
     protected DOENode pickBestChild(DOENode node) {
         DOENode child = store.read(node.child);
         DOENode bestChild = store.read(node.child);
-        double bestScore = computeScore(bestChild);
+        double bestScore = selectionScore(bestChild);
 
         while ((child = store.read(child.sibling)) != null) {
-            double score = computeScore(child);
+            double score = selectionScore(child);
 
             if (score < bestScore) {
                 bestScore = score;

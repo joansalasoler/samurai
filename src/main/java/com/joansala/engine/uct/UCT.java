@@ -18,6 +18,7 @@ package com.joansala.engine.uct;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import java.util.function.Consumer;
 
 import com.joansala.util.StopWatch;
@@ -49,7 +50,7 @@ import com.joansala.engine.base.*;
  * confidence-based score. The chosen child node is the one with the
  * demonstrably best score based on sufficient simulations. For
  * alternative selection criteria, you can override the
- * {@link #computeScore(UCTNode)} method.
+ * {@link #pickBestChild(UCTNode)} method.
  */
 public class UCT extends BaseEngine implements HasLeaves {
 
@@ -81,10 +82,10 @@ public class UCT extends BaseEngine implements HasLeaves {
     protected Leaves<Game> leaves = null;
 
     /** Exploration bias parameter */
-    public double biasFactor = DEFAULT_BIAS;
+    protected double exploreFactor = DEFAULT_BIAS;
 
     /** Exploration priority multiplier */
-    private double bias = DEFAULT_BIAS * maxScore;
+    protected double bias = DEFAULT_BIAS * maxScore;
 
 
     /**
@@ -98,10 +99,10 @@ public class UCT extends BaseEngine implements HasLeaves {
     /**
      * Create a new search engine.
      */
-    protected UCT(double biasFactor) {
+    protected UCT(double exploreFactor) {
         super();
         leaves = baseLeaves;
-        setExplorationBias(biasFactor);
+        setExplorationBias(exploreFactor);
     }
 
 
@@ -145,7 +146,7 @@ public class UCT extends BaseEngine implements HasLeaves {
     @Override
     public synchronized void setInfinity(int score) {
         super.setInfinity(score);
-        bias = biasFactor * maxScore;
+        bias = exploreFactor * maxScore;
     }
 
 
@@ -154,9 +155,10 @@ public class UCT extends BaseEngine implements HasLeaves {
      *
      * @param factor    Exploration parameter
      */
-    public synchronized void setExplorationBias(double factor) {
-        biasFactor = factor;
-        bias = biasFactor * maxScore;
+    @Inject(optional=true)
+    public synchronized void setExplorationBias(@Named("BIAS") double factor) {
+        exploreFactor = factor;
+        bias = exploreFactor * maxScore;
     }
 
 
@@ -258,15 +260,13 @@ public class UCT extends BaseEngine implements HasLeaves {
 
 
     /**
-     * Computes the expansion priority of an edge. Guides the selection
-     * using Upper Confidence Bounds (UCB1).
+     * Computes the expansion priority of an edge (UCB1).
      *
      * @param child      Child node
      * @param factor     Parent factor
-     *
      * @return           Expansion priority
      */
-    protected double computePriority(UCTNode child, double factor) {
+    private double computePriority(UCTNode child, double factor) {
         final double E = Math.sqrt(factor / child.count());
         final double priority = child.score() - E * bias;
 
@@ -275,12 +275,12 @@ public class UCT extends BaseEngine implements HasLeaves {
 
 
     /**
-     * Compute the selection score of a node.
+     * Compute the selection score of a node (secure child).
      *
      * @param node      A node
      * @return          Score of the node
      */
-    protected double computeScore(UCTNode node) {
+    private double selectionScore(UCTNode node) {
         final double bound = maxScore / Math.sqrt(node.count());
         final double score = node.score() + bound;
 
@@ -297,10 +297,10 @@ public class UCT extends BaseEngine implements HasLeaves {
     protected UCTNode pickBestChild(UCTNode node) {
         UCTNode child = node.child();
         UCTNode bestChild = node.child();
-        double bestScore = computeScore(bestChild);
+        double bestScore = selectionScore(bestChild);
 
         while ((child = child.sibling()) != null) {
-            double score = computeScore(child);
+            double score = selectionScore(child);
 
             if (score < bestScore) {
                 bestScore = score;
@@ -379,7 +379,7 @@ public class UCT extends BaseEngine implements HasLeaves {
             }
         }
 
-        UCTNode root = new UCTNode(game, Game.NULL_MOVE);
+        UCTNode root = createNode(game, Game.NULL_MOVE);
         root.initScore(0.0);
 
         return root;
@@ -463,11 +463,19 @@ public class UCT extends BaseEngine implements HasLeaves {
      *
      * @return          Score of the node
      */
-    private double evaluate(UCTNode node, Game game, int depth) {
+    protected double evaluate(UCTNode node, Game game, int depth) {
         final double score = score(node, game, depth);
         node.initScore(score);
 
         return score;
+    }
+
+
+    /**
+     * Instantiate a new node for the given edge.
+     */
+    protected UCTNode createNode(Game game, int move) {
+        return new UCTNode(game, move);
     }
 
 
@@ -481,7 +489,7 @@ public class UCT extends BaseEngine implements HasLeaves {
      * @return          New child node
      */
     private UCTNode appendChild(UCTNode parent, Game game, int move) {
-        final UCTNode node = new UCTNode(game, move);
+        final UCTNode node = createNode(game, move);
         parent.pushChild(node);
 
         return node;
@@ -495,7 +503,7 @@ public class UCT extends BaseEngine implements HasLeaves {
      * @param game      Game state
      * @param depth     Depth limit
      */
-    private double expand(UCTNode node, Game game, int depth) {
+    protected double expand(UCTNode node, Game game, int depth) {
         final int move;
         final UCTNode child;
         final double score;
