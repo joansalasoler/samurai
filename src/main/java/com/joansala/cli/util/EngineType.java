@@ -25,6 +25,7 @@ import com.joansala.engine.mindless.Mindless;
 import com.joansala.engine.mtd.MTDf;
 import com.joansala.engine.negamax.Negamax;
 import com.joansala.engine.partner.Partner;
+import com.joansala.engine.puct.PUCT;
 import com.joansala.engine.sampler.Sampler;
 import com.joansala.engine.uct.UCT;
 
@@ -49,10 +50,13 @@ public enum EngineType {
     /** An engine that picks bad moves if playing as north */
     PARTNER(Partner.class),
 
+    /** UCT engine with heuristic evaluations (PUCB) */
+    PUCT(PUCT.class),
+
     /** An engine with pure random simulations */
     SAMPLER(Sampler.class),
 
-    /** An UCT engine with heuristic evaluations */
+    /** UCT engine with heuristic evaluations (UCB1) */
     UCT(UCT.class);
 
     /** Engine type class */
