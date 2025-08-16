@@ -17,6 +17,9 @@ package com.joansala.engine.puct;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import com.joansala.engine.Game;
 import com.joansala.engine.uct.*;
 
@@ -30,6 +33,18 @@ import com.joansala.engine.uct.*;
  * compute their expansion prioriy.
  */
 public class PUCT extends UCT {
+
+    /**
+     * Preference for exploring suboptimal moves.
+     *
+     * @param factor    Exploration parameter
+     */
+    @Inject(optional=true)
+    public synchronized void setExplorationBias(
+        @Named("PUCB-BIAS") double factor) {
+        super.setExplorationBias(factor);
+    }
+
 
     /**
      * {@inheritDoc}

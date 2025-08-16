@@ -156,7 +156,8 @@ public class UCT extends BaseEngine implements HasLeaves {
      * @param factor    Exploration parameter
      */
     @Inject(optional=true)
-    public synchronized void setExplorationBias(@Named("BIAS") double factor) {
+    public synchronized void setExplorationBias(
+        @Named("UCB1-BIAS") double factor) {
         exploreFactor = factor;
         bias = exploreFactor * maxScore;
     }
