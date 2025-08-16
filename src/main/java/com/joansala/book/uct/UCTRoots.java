@@ -38,10 +38,10 @@ public class UCTRoots implements Closeable, Roots<Game> {
     private final BookReader reader;
 
     /** Disturbance score */
-    private double disturbance = Game.DRAW_SCORE;
+    private int disturbance = Game.DRAW_SCORE;
 
     /** Threshold score */
-    private double threshold = Game.DRAW_SCORE;
+    private int threshold = Game.DRAW_SCORE;
 
     /** If no more book moves can be found */
     private boolean outOfBook = false;
@@ -72,7 +72,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
      *
      * @param score     Disturbance score
      */
-    public void setDisturbance(double score) {
+    public void setDisturbance(int score) {
         disturbance = Math.abs(score);
     }
 
@@ -82,7 +82,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
      *
      * @param score     Threshold score
      */
-    public void setThreshold(double score) {
+    public void setThreshold(int score) {
         threshold = score;
     }
 
@@ -114,11 +114,9 @@ public class UCTRoots implements Closeable, Roots<Game> {
      * @param node      A node
      * @return          Score of the node
      */
-    private double computeScore(BookEntry entry) {
+    private double selectionScore(BookEntry entry) {
         final double bound = maxScore / Math.sqrt(entry.getCount());
-        final double score = entry.getScore() + bound;
-
-        return score;
+        return -(entry.getScore() + bound);
     }
 
 
@@ -148,10 +146,10 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
         if ((outOfBook = entries.isEmpty()) == false) {
             BookEntry secure = pickSecureEntry(entries);
-            double minScore = disturbance + computeScore(secure);
+            double bestScore = selectionScore(secure);
+            double minScore = Math.max(bestScore - disturbance, threshold);
 
-            entries.removeIf(e -> computeScore(e) > minScore);
-            entries.removeIf(e -> computeScore(e) > -threshold);
+            entries.removeIf(e -> selectionScore(e) < minScore);
 
             if ((outOfBook = entries.isEmpty()) == false) {
                 return pickRandomEntry(entries).getMove();
@@ -167,8 +165,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
      */
     @Override
     public int pickPonderMove(Game game) throws IOException {
-        List<BookEntry> entries = readChildren(game);
-        entries.removeIf(e -> !game.isLegal(e.getMove()));
+        List<BookEntry> entries = findEntries(game);
 
         if (entries.isEmpty() == false) {
             return pickMaxEntry(entries).getMove();
@@ -187,12 +184,12 @@ public class UCTRoots implements Closeable, Roots<Game> {
      */
     protected BookEntry pickSecureEntry(List<BookEntry> entries) {
         BookEntry bestEntry = entries.get(0);
-        double bestScore = computeScore(bestEntry);
+        double bestScore = selectionScore(bestEntry);
 
         for (BookEntry entry : entries) {
-            final double score = computeScore(entry);
+            final double score = selectionScore(entry);
 
-            if (score < bestScore) {
+            if (score > bestScore) {
                 bestScore = score;
                 bestEntry = entry;
             }
@@ -215,7 +212,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
         for (BookEntry entry : entries) {
             final double score = entry.getScore();
 
-            if (score < bestScore) {
+            if (score > bestScore) {
                 bestScore = score;
                 bestEntry = entry;
             }
