@@ -133,7 +133,7 @@ public class BookEntry implements Comparable<BookEntry> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(hash, parent);
+        return Objects.hash(parent, hash);
     }
 
 
@@ -189,5 +189,21 @@ public class BookEntry implements Comparable<BookEntry> {
         output.writeInt(move);
         output.writeDouble(score);
         output.writeLong(count);
+    }
+
+
+    /**
+     * Returns a copy of this book entry.
+     */
+    public BookEntry clone() {
+        BookEntry clone = new BookEntry();
+
+        clone.parent = parent;
+        clone.hash = hash;
+        clone.move = move;
+        clone.score = score;
+        clone.count = count;
+
+        return clone;
     }
 }
