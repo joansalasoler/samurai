@@ -1,5 +1,7 @@
 package com.joansala.engine.doe;
 
+import java.io.File;
+
 /*
  * Copyright (C) 2021-2024 Joan Sala Soler <contact@joansala.com>
  *
@@ -60,7 +62,7 @@ public class DOEExporter {
      * @return          Number of nodes exported
      */
     public long export(String path, long minCount) throws IOException {
-        BookWriter writer = new BookWriter(path);
+        BookWriter writer = new BookWriter(new File(path));
         long count = 0L;
 
         writer.setHeaders(headers);

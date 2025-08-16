@@ -19,7 +19,11 @@ package com.joansala.engine.doe;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.sleepycat.je.*;
 import com.sleepycat.persist.*;
 
@@ -38,6 +42,9 @@ public class DOEStore implements AutoCloseable {
     /** Primary index for the store */
     private final PrimaryIndex<Long, DOENode> nodes;
 
+    /** Secondary index for the store */
+    private final SecondaryIndex<Long, Long, DOENode> hashes;
+
 
     /**
      * Create a new store instance.
@@ -47,6 +54,7 @@ public class DOEStore implements AutoCloseable {
         environment = openEnvironment(home);
         store = openStore(environment);
         nodes = store.getPrimaryIndex(Long.class, DOENode.class);
+        hashes = store.getSecondaryIndex(nodes, Long.class, "hash");
     }
 
 
@@ -144,6 +152,29 @@ public class DOEStore implements AutoCloseable {
         } catch (DatabaseException e) {
             handleException(e);
         }
+    }
+
+
+    /**
+     * Get nodes from the store with the given hash.
+     */
+    public List<DOENode> find(Long hash) {
+        if (hash == null) {
+            return Collections.emptyList();
+        }
+
+        List<DOENode> nodes = new ArrayList<>();
+        EntityIndex<Long, DOENode> index = hashes.subIndex(hash);
+
+        try (EntityCursor<DOENode> cursor = index.entities()) {
+            for (DOENode node : cursor) {
+                nodes.add(node);
+            }
+        } catch (DatabaseException e) {
+            handleException(e);
+        }
+
+        return nodes;
     }
 
 

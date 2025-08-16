@@ -21,14 +21,15 @@ package com.joansala.engine.doe;
 import java.io.Serializable;
 import com.sleepycat.persist.model.Entity;
 import com.sleepycat.persist.model.PrimaryKey;
-
+import com.sleepycat.persist.model.Relationship;
+import com.sleepycat.persist.model.SecondaryKey;
 import com.joansala.engine.Game;
 
 
 /**
  * A game state on a search tree.
  */
-@Entity(version = 1)
+@Entity(version = 2)
 public class DOENode implements Comparable<DOENode>, Serializable {
 
     /** Serialization version */
@@ -39,6 +40,7 @@ public class DOENode implements Comparable<DOENode>, Serializable {
     long id;
 
     /** Hash code of the node */
+    @SecondaryKey(relate=Relationship.MANY_TO_ONE)
     long hash = 0x00;
 
     /** Parent of this node */
@@ -96,6 +98,30 @@ public class DOENode implements Comparable<DOENode>, Serializable {
         moves = game.moves();
         turn = game.turn();
         this.move = move;
+    }
+
+
+    /**
+     * Player to move.
+     */
+    public int getTurn() {
+        return turn;
+    }
+
+
+    /**
+     * Number of expanded childs.
+     */
+    public double getCount() {
+        return count;
+    }
+
+
+    /**
+     * Current average score.
+     */
+    public double getScore() {
+        return score;
     }
 
 
