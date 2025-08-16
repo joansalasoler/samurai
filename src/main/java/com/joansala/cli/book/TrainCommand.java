@@ -21,8 +21,10 @@ package com.joansala.cli.book;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+
 import picocli.CommandLine.*;
 
 import com.joansala.cli.util.EngineType;
@@ -50,6 +52,7 @@ public class TrainCommand implements Callable<Integer> {
 
     /** Root game state */
     private final Game rootGame;
+
 
     @Option(
       names = "--path",
@@ -124,7 +127,7 @@ public class TrainCommand implements Callable<Integer> {
         BlockingQueue<Evaluator> evaluators = new ArrayBlockingQueue<>(poolSize);
 
         for (int i = 0; i < poolSize; i++) {
-            evaluators.add(new Evaluator());
+            evaluators.add(createEvaluator(store));
         }
 
         // Ensures the store is properly closed
@@ -150,7 +153,7 @@ public class TrainCommand implements Callable<Integer> {
         // Evaluate positions as they arrive
 
         trainer.train(nodeSize, rootGame, (moves) -> {
-            try{
+            try {
                 Evaluator evaluator = evaluators.take();
                 final int score = evaluator.computeScore(moves);
                 final int centis = rootGame.toCentiPawns(score);
@@ -189,6 +192,17 @@ public class TrainCommand implements Callable<Integer> {
      */
     private Game getGameInstance() {
         return injector.getInstance(Game.class);
+    }
+
+
+    /**
+     * Creates an evaluator instance.
+     *
+     * @param store the DOE store to use
+     * @return a new evaluator instance
+     */
+    protected Evaluator createEvaluator(DOEStore store) {
+        return new Evaluator(store);
     }
 
 
@@ -268,16 +282,36 @@ public class TrainCommand implements Callable<Integer> {
     /**
      * Evaluates a game states using an engine.
      */
-    private class Evaluator {
+    protected class Evaluator {
+
+        /** Game for position evaluation */
         private Game game;
+
+        /** Engine instance for score computation */
         private Engine engine;
 
-        private Evaluator() {
-            game = getGameInstance();
-            engine = getEngineInstance();
+        /** DOE store reference */
+        private DOEStore store;
+
+
+        /**
+         * Creates a new evaluator instance.
+         *
+         * @param store the DOE store to use
+         */
+        protected Evaluator(DOEStore store) {
+            this.game = getGameInstance();
+            this.engine = getEngineInstance();
+            this.store = store;
         }
 
-        private void setMoves(int[] moves) {
+
+        /**
+         * Sets up the game position by applying the given moves.
+         *
+         * @param moves array of moves to apply to the root position
+         */
+        protected void setMoves(int[] moves) {
             game.setBoard(rootBoard);
             game.ensureCapacity(moves.length);
 
@@ -286,7 +320,14 @@ public class TrainCommand implements Callable<Integer> {
             }
         }
 
-        private int computeScore(int[] moves) {
+
+        /**
+         * Computes the score for a position reached by the given moves.
+         *
+         * @param moves array of moves leading to the position to evaluate
+         * @return the computed score for the position
+         */
+        protected int computeScore(int[] moves) {
             setMoves(moves);
             engine.newMatch();
             return engine.computeBestScore(game);
