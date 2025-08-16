@@ -163,6 +163,17 @@ public final class Bits {
 
 
     /**
+     * Return a bitboard without any transforms (no-op).
+     *
+     * @param bitboard      Bitboard
+     * @return              New bitboard
+     */
+    public static final long identity(long bitboard) {
+        return bitboard;
+    }
+
+
+    /**
      * Rotate 180 degrees an 8x8 bitboard.
      *
      * @param bitboard      Bitboard
