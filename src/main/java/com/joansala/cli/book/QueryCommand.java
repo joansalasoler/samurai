@@ -52,7 +52,7 @@ public class QueryCommand implements Callable<Integer> {
     private File suiteFile;
 
     @Option(
-      names = "--roots",
+      names = "--roots-path",
       description = "Exported openings book path",
       required = true
     )
@@ -81,14 +81,18 @@ public class QueryCommand implements Callable<Integer> {
                     BookEntry entry = null;
                     long parent = game.hash();
 
+                    Board state = game.toBoard();
+                    System.out.format("fen = %s%n", state.toDiagram());
+
                     for (int move : game.legalMoves()) {
-                        Board state = game.toBoard();
                         game.makeMove(move);
 
                         try {
                             entry = book.readEntry(parent, game.hash());
-                            printBookEntry(state, entry);
-                        } catch (Exception e) {}
+                            printBookEntry(state, entry, move);
+                        } catch (Exception e) {
+                            System.err.println(e);
+                        }
 
                         game.unmakeMove();
                     }
@@ -110,14 +114,21 @@ public class QueryCommand implements Callable<Integer> {
      * @param board     Board sate for the entry
      * @param entry     Book entry
      */
-    public void printBookEntry(Board board, BookEntry entry) {
-        System.out.format(
-            "move = %s, score = %.2f, value = %.2f, count = %d%n",
-            board.toCoordinates(entry.getMove()),
-            computeScore(game, entry),
-            entry.getScore(),
-            entry.getCount()
-        );
+    public void printBookEntry(Board board, BookEntry entry, int move) {
+        if (entry instanceof BookEntry) {
+            System.out.format(
+                "move = %s, score = %.4f, value = %.4f, count = %d%n",
+                board.toCoordinates(move),
+                selectionScore(game, entry),
+                -entry.getScore(),
+                entry.getCount()
+            );
+        } else {
+            System.out.format(
+                "move = %s, not in the book%n",
+                board.toCoordinates(move)
+            );
+        }
     }
 
 
@@ -129,10 +140,9 @@ public class QueryCommand implements Callable<Integer> {
      * @param node      A book entry
      * @return          Score of the node
      */
-    private double computeScore(Game game, BookEntry entry) {
-        final double bound = game.infinity() / Math.sqrt(entry.getCount());
-        final double score = entry.getScore() + bound;
-
-        return score;
+    private double selectionScore(Game game, BookEntry entry) {
+        final int maxScore = game.infinity();
+        final double bound = maxScore / Math.sqrt(entry.getCount());
+        return -(entry.getScore() + bound);
     }
 }
