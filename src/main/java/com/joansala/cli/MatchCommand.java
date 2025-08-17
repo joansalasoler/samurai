@@ -256,7 +256,7 @@ public class MatchCommand implements Callable<Integer> {
      */
     private int askForMove(LineReader reader) throws Exception {
         String notation = reader.readLine("Your move? ").trim();
-        return "undo".equals(notation) ? UNDO_MOVE : board.toMove(notation);
+        return "undo".equals(notation) ? UNDO_MOVE : board.parseCoordinates(notation);
     }
 
 

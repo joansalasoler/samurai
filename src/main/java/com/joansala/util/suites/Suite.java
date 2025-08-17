@@ -65,8 +65,8 @@ public class Suite {
      */
     public void setupGame(Game game) {
         Board parser = game.getStartingBoard();
-        Board board = parser.toBoard(diagram());
-        int[] moves = board.toMoves(notation());
+        Board board = parser.fromDiagram(diagram());
+        int[] moves = board.parseNotation(notation());
 
         game.setStartingBoard(board);
         game.ensureCapacity(1 + moves.length);

@@ -86,7 +86,7 @@ public abstract class BaseBoard<P> implements Board {
      * {@inheritDoc}
      */
     @Override
-    public int[] toMoves(String notation) {
+    public int[] parseNotation(String notation) {
         if (notation == null || notation.isBlank()) {
             return new int[0];
         }
@@ -95,7 +95,7 @@ public abstract class BaseBoard<P> implements Board {
         int[] moves = new int[notations.length];
 
         for (int i = 0; i < notations.length; i++) {
-            moves[i] = toMove(notations[i]);
+            moves[i] = parseCoordinates(notations[i]);
         }
 
         return moves;
@@ -106,7 +106,7 @@ public abstract class BaseBoard<P> implements Board {
      * {@inheritDoc}
      */
     @Override
-    public abstract int toMove(String notation);
+    public abstract int parseCoordinates(String notation);
 
 
     /**
@@ -120,7 +120,7 @@ public abstract class BaseBoard<P> implements Board {
      * {@inheritDoc}
      */
     @Override
-    public abstract Board toBoard(String notation);
+    public abstract Board fromDiagram(String notation);
 
 
     /**

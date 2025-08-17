@@ -133,8 +133,8 @@ public class PlayCommand implements Callable<Integer> {
             reader.stream().forEach((suite) -> {
                 System.out.format("%s%n", ellipsis(suite, 59));
 
-                Board board = parser.toBoard(suite.diagram());
-                int[] moves = board.toMoves(suite.notation());
+                Board board = parser.fromDiagram(suite.diagram());
+                int[] moves = board.parseNotation(suite.notation());
 
                 game.ensureCapacity(moves.length);
                 game.setStartingBoard(board);

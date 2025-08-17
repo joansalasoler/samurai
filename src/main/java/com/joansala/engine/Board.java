@@ -42,7 +42,7 @@ import com.joansala.except.GameEngineException;
  * Refer to the Universal Chess Interface (UCI) specification
  * (https://www.chessprogramming.org/UCI) for details on how to encode
  * your game state using standard notations and how these representations
- * are used for communication between chess engines and user interfaces.
+ * are used for communication between game engines and user interfaces.
  *
  * ## Key Principles:
  *
@@ -54,8 +54,10 @@ import com.joansala.except.GameEngineException;
  *   manipulation by your {@link Game} implementation (e.g., bitboards
  *   for Tic-Tac-Toe or Chess).
  * - **Standard Notations:**  Methods are provided for converting the game
- *   state to and from standard notations used for communication and storage
- *   (e.g., FEN for Chess, Algebraic Notation for moves).
+ *   internal representations to and from standard notations used for
+ *   communication (e.g., FEN, Algebraic Notation). These conversion
+ *   methods enable interoperability with communication protocols like
+ *   the built-in Universal Chess Inteface (UCI).
  *
  * ## Implementing a new game Board
  *
@@ -86,11 +88,11 @@ import com.joansala.except.GameEngineException;
  *    - The constructor should initialize the board with the starting game
  *      state (standard start position and turn; for Tic-Tac-Toe it's an
  *      empty board).
- *    - Implement methods like {@link #toMove(String)}, {@link #toCoordinates(int)},
- *      to return the encapsulated data and handle move conversions.
- *    - Implement methods like {@link #toBoard(String)} and {@link #toDiagram()}
- *      to convert between external notations (like FEN) and your internal
- *      game state representation.
+ *    - Implement methods like {@link #parseCoordinates(String)} and
+ *      {@link #toCoordinates(int)} to handle move conversions.
+ *    - Implement methods like {@link #fromDiagram(String)} and
+ *      {@link #toDiagram()} to convert between external notations (like
+ *      FEN) and your internal game state representation.
  *    - Override the {@link #toString()} method to provide a human-readable
  *      representation of the board state suitable for displaying on the
  *      console.
@@ -114,6 +116,27 @@ public interface Board {
     int turn();
 
 
+    /** Use {@link #fromDiagram(String)}. */
+    @Deprecated
+    default Board toBoard(String diagram) {
+        return fromDiagram(diagram);
+    }
+
+
+    /** Use {@link #parseCoordinates(String)}. */
+    @Deprecated
+    default int toMove(String coordinates) {
+        return parseCoordinates(coordinates);
+    }
+
+
+    /** Use {@link #parseNotation(String)}. */
+    @Deprecated
+    default int[] toMoves(String notation) {
+        return parseNotation(notation);
+    }
+
+
     /**
      * Generates a compact string representation of the current board
      * state in a standard notation.
@@ -121,7 +144,7 @@ public interface Board {
      * This method adheres to a notation format commonly used for
      * communication between game engines and user interfaces (e.g., FEN
      * for Chess). This string representation can be used to reconstruct
-     * an identical board state using the {@link #toBoard(String)} method.
+     * an identical board state using {@link #fromDiagram(String)}.
      *
      * It is used, for example, by the Universal Chess Interface (UCI)
      * implementation to communicate the state of an ongoing match to an
@@ -145,90 +168,105 @@ public interface Board {
      * @return A new board instance representing the provided diagram.
      * @throws GameEngineException If the diagram string is invalid.
      */
-    Board toBoard(String diagram);
+    Board fromDiagram(String diagram);
 
 
     /**
-     * Converts a move identifier to its coordinate representation.
+     * Converts a move identifier to its coordinates.
      *
-     * This method takes an internal move identifier and returns a
-     * string describing a move performed on the board using a standard
-     * notation (e.g., "e4" in Chess). This is used for displaying the
-     * move to a human player and for communication with game engines
-     * using protocols like UCI.
+     * This method transforms the game's internal numeric move representation
+     * into a standardized string format that describes the move's location
+     * or action on the board. This coordinate format is primarily used
+     * for communication with external engines via protocols like UCI.
+     * Examples include:
      *
-     * (See {@link #toMove(String)} for the reverse operation).
+     * - Chess: "e2e4" or "Nf3" (algebraic notation)
+     * - Tic-Tac-Toe: "a1" or "c3" (grid coordinates)
+     * - Checkers: "12-16" (square numbers)
      *
-     * @param move The move identifier.
-     * @return The move's coordinate representation.
-     * @throws GameEngineException If the move identifier is invalid.
+     * Use {@link #parseCoordinates(String)} to convert coordinates back
+     * to move identifiers.
+     *
+     * @param move Internal move identifier (game-specific encoding)
+     * @return The move's coordinates in standard notation (e.g., "e4", "a1")
+     * @throws GameEngineException If the move identifier is invalid
      */
     String toCoordinates(int move);
 
 
     /**
-     * Converts a sequence of move identifiers to their notation
-     * representation.
+     * Converts a sequence of move identifiers to game notation format.
      *
-     * This method takes an array of move identifiers and returns a string
-     * describing the sequence of moves played on the board in a standard
-     * notation format (e.g., for chess "e4 e5 Nf3 Nc6"). This notation
-     * is often used for recording games or communicating moves between
-     * players or engines.
+     * This method transforms an array of internal move identifiers into
+     * a complete game notation string that represents the entire move
+     * sequence. The output format follows game-specific standards:
      *
-     * Notice that you can usually call {@link #toCoordinates} on each move
-     * in the sequence, but for some games, such as draughts (checkers),
-     * the notation representation may depend on the current state.
+     * - Chess: "e4 e5 Nf3 Nc6" (algebraic notation)
+     * - Tic-Tac-Toe: "a1 b2 c3" (coordinates)
+     * - Checkers: "11-15 23-19 8-11" (dash notation with captures)
      *
-     * (See {@link #toMoves(String)} for the reverse operation).
-     * (See {@link #toCoordinates} for the conversion of a single move.
+     * Unlike {@link #toCoordinates(int)} which converts individual moves,
+     * this method may produce different output for the same move depending
+     * on the game state. For example, in checkers, multiple jumps in a
+     * single turn are represented as one notation entry.
      *
-     * This method does not validate the sequence of moves.
+     * This method does not validate move legality or sequence correctness,
+     * it only converts valid identifiers to notation.
      *
-     * @param moves The array of move identifiers.
-     * @return The notation representation of the move sequence
-     *        (e.g., for chess "e4 e5 Nf3 Nc6").
-     * @throws GameEngineException If any move identifier is invalid.
+     * Use {@link #parseNotation(String)} to convert notation back to
+     * move arrays.
+     *
+     * @param moves Array of internal move identifiers
+     * @return Complete game notation string (e.g., "1.e4 e5 2.Nf3 Nc6")
+     * @throws GameEngineException If any move identifier is invalid
+     * @see #toCoordinates(int) For single move coordinate conversion
      */
     String toNotation(int[] moves);
 
 
     /**
-     * Converts a move coordinate representation to its move identifier.
+     * Converts human-readable move coordinates to move identifiers.
      *
-     * This method takes a string representing the location of a move on
-     * the board (often in standard notation format) and returns the
-     * corresponding internal move identifier used by the game. This can
-     * be useful for processing user input or storing game history.
+     * This method converts standardized coordinate strings into the
+     * game's internal numeric move representation. It accepts the same
+     * coordinate formats produced by {@link #toCoordinates(int)}:
      *
-     * (See {@link #toCoordinates(int)} for the reverse operation).
+     * - Chess: "e2e4", "Nf3", "O-O" (algebraic notations)
+     * - Tic-Tac-Toe: "a1", "c3" (grid coordinates)
+     * - Checkers: "12-16" (square-to-square notation)
      *
-     * @param coordinate The move's coordinate representation (e.g., "e4" in chess).
-     * @return The move identifier.
-     * @throws GameEngineException If the coordinate representation is invalid.
+     * Use {@link #toCoordinates(int)} to convert move identifiers back
+     * to coordinate strings.
+     *
+     * @param coordinates Move coordinates (e.g., "e4", "a1")
+     * @return Internal move identifier corresponding to the coordinates
+     * @throws GameEngineException If coordinates format is invalid
      */
-    int toMove(String coordinate);
+    int parseCoordinates(String coordinates);
 
 
     /**
-     * Converts a move sequence notation to an array of move identifiers.
+     * Converts complete game notation into an array of move identifiers.
      *
-     * This method takes a strings representing a sequence of moves
-     * played on the board in standard notation format and returns an
-     * array of corresponding move identifiers used internally by the
-     * game. This can be useful for replaying games or parsing move
-     * sequences from external sources.
+     * This method converts a full game notation string into an array of
+     * internal move identifiers. It handles game-specific notation formats:
      *
-     * This method does not validate the sequence of moves.
+     * - Chess: "e4 e5 Nf3 Nc6" (algebraic notation)
+     * - Tic-Tac-Toe: "a1 b2 c3" (grid coordinates)
+     * - Checkers: "11-15 23-19 8-11" (move sequences with captures)
      *
-     * (See {@link #toNotation(int[])} for the reverse operation).
+     * This method only validates notation syntax, not move legality. Use
+     * with a {@link Game} instance to validate actual move sequences.
      *
-     * @param notation The notation representation of the move sequence
-     *                (e.g., "e4 e5 Nf3 Nc6" in chess).
-     * @return An array of move identifiers representing the move sequence.
-     * @throws GameEngineException If a notation string is invalid.
+     * Use {@link #toNotation(int[])} to convert move arrays back to
+     * notation strings.
+     *
+     * @param notation Complete game notation string (e.g., "e4 e5 Nf3")
+     * @return Array of internal move identifiers
+     * @throws GameEngineException If notation format is invalid
+     * @see #parseCoordinates(String) For single move coordinate parsing
      */
-    int[] toMoves(String notation);
+    int[] parseNotation(String notation);
 
 
     /**

@@ -53,12 +53,12 @@ public class PositionCommand implements UCICommand {
 
         if (params.contains(FEN)) {
             String diagram = params.get(FEN);
-            board = board.toBoard(diagram);
+            board = board.fromDiagram(diagram);
         }
 
         if (params.contains(MOVES)) {
             String notation = params.get(MOVES);
-            moves = board.toMoves(notation);
+            moves = board.parseNotation(notation);
         }
 
         brain.setState(board, moves);

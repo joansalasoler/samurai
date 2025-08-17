@@ -92,7 +92,7 @@ public class MockBoard implements Board {
      * {@inheritDoc}
      */
     @Override
-    public int[] toMoves(String notation) {
+    public int[] parseNotation(String notation) {
         if (notation == null || notation.isBlank()) {
             return new int[0];
         }
@@ -101,7 +101,7 @@ public class MockBoard implements Board {
         int[] moves = new int[notations.length];
 
         for (int i = 0; i < notations.length; i++) {
-            moves[i] = toMove(notations[i]);
+            moves[i] = parseCoordinates(notations[i]);
         }
 
         return moves;
@@ -112,7 +112,7 @@ public class MockBoard implements Board {
      * {@inheritDoc}
      */
     @Override
-    public int toMove(String notation) {
+    public int parseCoordinates(String notation) {
         return Integer.parseInt(notation);
     }
 
@@ -135,7 +135,7 @@ public class MockBoard implements Board {
      * {@inheritDoc}
      */
     @Override
-    public Board toBoard(String notation) {
+    public Board fromDiagram(String notation) {
         String[] fields = notation.split(" ");
 
         int position = Integer.parseInt(fields[0]);

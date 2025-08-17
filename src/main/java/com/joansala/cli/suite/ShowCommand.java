@@ -70,8 +70,8 @@ public class ShowCommand implements Callable<Integer> {
 
         try (SuiteReader reader = new SuiteReader(input)) {
             reader.stream().forEach((suite) -> {
-                Board board = parser.toBoard(suite.diagram());
-                int[] moves = board.toMoves(suite.notation());
+                Board board = parser.fromDiagram(suite.diagram());
+                int[] moves = board.parseNotation(suite.notation());
 
                 game.setStartingBoard(board);
                 game.ensureCapacity(1 + moves.length);
