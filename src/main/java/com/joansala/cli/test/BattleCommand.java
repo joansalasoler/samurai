@@ -179,7 +179,7 @@ public class BattleCommand implements Callable<Integer> {
             north.startNewGame();
             north.setTurn(NORTH);
 
-            game.setBoard(board);
+            game.setStartingBoard(board);
 
             if (watch) printBoard(game);
 
@@ -277,7 +277,7 @@ public class BattleCommand implements Callable<Integer> {
      * Prints the board of the given game.
      */
     private void printBoard(Game game) {
-        System.out.println("\n " + game.toBoard());
+        System.out.println("\n " + game.getCurrentBoard());
     }
 
 

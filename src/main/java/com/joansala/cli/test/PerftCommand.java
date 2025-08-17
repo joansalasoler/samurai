@@ -76,7 +76,7 @@ public class PerftCommand implements Callable<Integer> {
     @Inject public PerftCommand(Game game) {
         this.game = game;
         this.stats = new BenchStats();
-        this.parser = game.getBoard();
+        this.parser = game.getStartingBoard();
     }
 
 
@@ -101,7 +101,7 @@ public class PerftCommand implements Callable<Integer> {
             System.out.format("%s%n", horizontalRule('-'));
             System.out.format("%s%n", formatHeader());
 
-            game.setBoard(parser);
+            game.setStartingBoard(parser);
             game.ensureCapacity(1 + maxDepth);
             benchmark(game, minDepth, maxDepth);
         } else {

@@ -48,7 +48,7 @@ public class PositionCommand implements UCICommand {
         }
 
         UCIBrain brain = service.getBrain();
-        Board board = service.getBoard();
+        Board board = service.getStartingBoard();
         int[] moves = new int[0];
 
         if (params.contains(FEN)) {

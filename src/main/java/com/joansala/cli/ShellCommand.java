@@ -113,8 +113,8 @@ public class ShellCommand implements Callable<Integer> {
         }
 
         while (client.isRunning()) {
-            if (!client.getBoard().equals(board)) {
-                board = client.getBoard();
+            if (!client.getCurrentBoard().equals(board)) {
+                board = client.getCurrentBoard();
                 printBoard(writer);
             }
 
@@ -143,7 +143,7 @@ public class ShellCommand implements Callable<Integer> {
      * @param writer    Terminal writer
      */
     private void printBoard(PrintWriter writer) {
-        writer.println(client.getBoard());
+        writer.println(client.getCurrentBoard());
         writer.flush();
     }
 

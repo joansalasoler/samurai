@@ -152,7 +152,7 @@ public class MatchCommand implements Callable<Integer> {
 
         try {
             initializePlayer();
-            board = game.toBoard();
+            board = game.getCurrentBoard();
 
             printWelcome(writer);
             printBoard(writer);
@@ -184,7 +184,7 @@ public class MatchCommand implements Callable<Integer> {
                         printMove(writer, move);
                     }
 
-                    board = game.toBoard();
+                    board = game.getCurrentBoard();
                     printBoard(writer);
                 } catch (UserInterruptException e) {
                     throw e;
@@ -453,7 +453,7 @@ public class MatchCommand implements Callable<Integer> {
         public boolean apply() {
             if (turn == game.turn()) {
                 unmakeMoves(game);
-                board = game.toBoard();
+                board = game.getCurrentBoard();
                 System.out.println();
                 printBoard(writer);
                 System.out.print("Your move? ");

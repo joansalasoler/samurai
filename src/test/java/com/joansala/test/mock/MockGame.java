@@ -163,7 +163,7 @@ public class MockGame implements Game {
      * {@inheritDoc}
      */
     @Override
-    public Board getBoard() {
+    public Board getStartingBoard() {
         return board;
     }
 
@@ -172,7 +172,7 @@ public class MockGame implements Game {
      * {@inheritDoc}
      */
     @Override
-    public void setBoard(Board board) {
+    public void setStartingBoard(Board board) {
         this.board = (MockBoard) board;
         this.position = this.board.position();
         this.turn = board.turn();
@@ -183,7 +183,7 @@ public class MockGame implements Game {
      * {@inheritDoc}
      */
     @Override
-    public Board toBoard() {
+    public Board getCurrentBoard() {
         return new MockBoard(position, turn);
     }
 

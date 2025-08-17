@@ -69,7 +69,7 @@ public class DivideCommand implements Callable<Integer> {
     @Inject public DivideCommand(Game game) {
         this.game = game;
         this.stats = new BenchStats();
-        this.parser = game.getBoard();
+        this.parser = game.getStartingBoard();
     }
 
 
@@ -93,7 +93,7 @@ public class DivideCommand implements Callable<Integer> {
             System.out.format("%n%s%n", ellipsis(diagram, 59));
             System.out.format("%s%n", horizontalRule('-'));
 
-            game.setBoard(parser);
+            game.setStartingBoard(parser);
             game.ensureCapacity(depth);
             benchmark(game, depth - 1);
         } else {

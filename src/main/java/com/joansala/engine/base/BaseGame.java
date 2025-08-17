@@ -155,21 +155,21 @@ public abstract class BaseGame implements Game {
      * {@inheritDoc}
      */
     @Override
-    public abstract Board getBoard();
+    public abstract Board getStartingBoard();
 
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public abstract void setBoard(Board board);
+    public abstract void setStartingBoard(Board board);
 
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public abstract Board toBoard();
+    public abstract Board getCurrentBoard();
 
 
     /**

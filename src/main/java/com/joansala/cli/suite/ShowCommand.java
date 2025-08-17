@@ -58,7 +58,7 @@ public class ShowCommand implements Callable<Integer> {
      */
     @Inject public ShowCommand(Game game) {
         this.game = game;
-        this.parser = game.getBoard();
+        this.parser = game.getStartingBoard();
     }
 
 
@@ -73,26 +73,26 @@ public class ShowCommand implements Callable<Integer> {
                 Board board = parser.toBoard(suite.diagram());
                 int[] moves = board.toMoves(suite.notation());
 
-                game.setBoard(board);
+                game.setStartingBoard(board);
                 game.ensureCapacity(1 + moves.length);
 
                 System.out.format("%s%n", suite.diagram());
                 System.out.format("%n%s%nStart position%n", board);
 
                 for (int move : moves) {
-                    board = game.toBoard();
+                    board = game.getCurrentBoard();
                     game.makeMove(move);
 
                     System.out.format(
                         "%n%s%nAfter move: %s%n",
-                        game.toBoard(),
+                        game.getCurrentBoard(),
                         board.toCoordinates(move)
                     );
                 }
 
                 if (game.hasEnded()) {
                     game.endMatch();
-                    board = game.toBoard();
+                    board = game.getCurrentBoard();
                     System.out.format("%n%s%nEnd position%n", board);
                 }
             });

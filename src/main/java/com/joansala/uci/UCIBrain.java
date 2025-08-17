@@ -187,14 +187,14 @@ public class UCIBrain extends Thread {
      * Setup the search state on the game.
      */
     private void setupGameState() {
-        game.setBoard(board);
+        game.setStartingBoard(board);
         game.ensureCapacity(moves.length);
 
         for (int move : moves) {
             game.makeMove(move);
         }
 
-        parser = game.toBoard();
+        parser = game.getCurrentBoard();
     }
 
 
@@ -254,11 +254,11 @@ public class UCIBrain extends Thread {
         // Reply with a best move and a ponder move if available.
         // Notice move notations may be dependent on the game state.
 
-        String mc = game.toBoard().toCoordinates(move);
+        String mc = game.getCurrentBoard().toCoordinates(move);
         game.makeMove(move);
 
         if ((ponder = getPonderMove(game)) != NULL_MOVE) {
-            String pc = game.toBoard().toCoordinates(ponder);
+            String pc = game.getCurrentBoard().toCoordinates(ponder);
             service.send(BESTMOVE, mc, PONDER, pc);
         } else {
             service.send(BESTMOVE, mc);
@@ -387,7 +387,7 @@ public class UCIBrain extends Thread {
     private String getLegalMovesNotation(Game game) {
         StringJoiner joiner = new StringJoiner(" ");
         int[] moves = game.legalMoves();
-        Board board = game.toBoard();
+        Board board = game.getCurrentBoard();
 
         for (int move : moves) {
             joiner.add(board.toCoordinates(move));

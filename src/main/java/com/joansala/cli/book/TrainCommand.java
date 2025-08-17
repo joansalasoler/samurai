@@ -103,7 +103,7 @@ public class TrainCommand implements Callable<Integer> {
     @Inject public TrainCommand(Injector injector) {
         this.injector = injector;
         this.rootGame = injector.getInstance(Game.class);
-        this.rootBoard = rootGame.getBoard();
+        this.rootBoard = rootGame.getStartingBoard();
     }
 
 
@@ -312,7 +312,7 @@ public class TrainCommand implements Callable<Integer> {
          * @param moves array of moves to apply to the root position
          */
         protected void setMoves(int[] moves) {
-            game.setBoard(rootBoard);
+            game.setStartingBoard(rootBoard);
             game.ensureCapacity(moves.length);
 
             for (int move : moves) {

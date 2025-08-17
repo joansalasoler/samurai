@@ -81,7 +81,7 @@ public class QueryCommand implements Callable<Integer> {
                     BookEntry entry = null;
                     long parent = game.hash();
 
-                    Board state = game.toBoard();
+                    Board state = game.getCurrentBoard();
                     System.out.format("fen = %s%n", state.toDiagram());
 
                     for (int move : game.legalMoves()) {

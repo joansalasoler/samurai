@@ -123,8 +123,8 @@ public class UCIClient {
     @Inject public UCIClient(Game game) {
         logger = Logger.getLogger("com.joansala.uci");
         this.game = game;
-        this.board = game.getBoard();
-        this.rootBoard = game.getBoard();
+        this.board = game.getStartingBoard();
+        this.rootBoard = game.getStartingBoard();
         this.state = State.STOPPED;
         this.ready = true;
         this.uciok = true;
@@ -162,8 +162,8 @@ public class UCIClient {
      *
      * @return  A board object
      */
-    public Board getBoard() {
-        return game.toBoard();
+    public Board getCurrentBoard() {
+        return game.getCurrentBoard();
     }
 
 
@@ -437,7 +437,7 @@ public class UCIClient {
         board = (STARTPOS.equals(position)) ?
             rootBoard : rootBoard.toBoard(position);
 
-        game.setBoard(board);
+        game.setStartingBoard(board);
 
         // Obtain the moves for the received notation
 
@@ -666,7 +666,7 @@ public class UCIClient {
 
         // Validate the received moves legality
 
-        Board board = game.toBoard();
+        Board board = game.getCurrentBoard();
         int best = board.toMove(bestMove);
         int ponder = Game.NULL_MOVE;
 
@@ -680,7 +680,7 @@ public class UCIClient {
 
         try {
             if (ponderMove != null) {
-                ponder = game.toBoard().toMove(ponderMove);
+                ponder = game.getCurrentBoard().toMove(ponderMove);
 
                 if (!game.isLegal(ponder)) {
                     throw new IllegalMoveException(

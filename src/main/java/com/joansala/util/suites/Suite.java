@@ -64,11 +64,11 @@ public class Suite {
      * @param game      A game object
      */
     public void setupGame(Game game) {
-        Board parser = game.getBoard();
+        Board parser = game.getStartingBoard();
         Board board = parser.toBoard(diagram());
         int[] moves = board.toMoves(notation());
 
-        game.setBoard(board);
+        game.setStartingBoard(board);
         game.ensureCapacity(1 + moves.length);
 
         for (int move : moves) {
@@ -87,7 +87,7 @@ public class Suite {
      */
     public static Suite fromGame(Game game) {
         int[] moves = game.moves();
-        Board board = game.getBoard();
+        Board board = game.getStartingBoard();
         String diagram = board.toDiagram();
         String notation = board.toNotation(moves);
 

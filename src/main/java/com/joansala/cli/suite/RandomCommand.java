@@ -84,7 +84,7 @@ public class RandomCommand implements Callable<Integer> {
      */
     @Inject public RandomCommand(Game game) {
         this.game = game;
-        this.rootBoard = game.getBoard();
+        this.rootBoard = game.getStartingBoard();
     }
 
 
@@ -94,7 +94,7 @@ public class RandomCommand implements Callable<Integer> {
     @Override public Integer call() throws Exception {
         for (int i = 0; i < size; i++) {
             Suite suite = generateSuite(rootBoard, game);
-            String diagram = game.toBoard().toDiagram();
+            String diagram = game.getCurrentBoard().toDiagram();
             System.out.println(diagramOnly ? diagram : suite);
         }
 
@@ -110,7 +110,7 @@ public class RandomCommand implements Callable<Integer> {
      */
     private Suite generateSuite(Board board, Game game) {
         int depth = random.nextInt(maxDepth);
-        game.setBoard(board);
+        game.setStartingBoard(board);
 
         while ((endGame || depth < maxDepth) && !game.hasEnded()) {
             final int move = getRandomMove(game);

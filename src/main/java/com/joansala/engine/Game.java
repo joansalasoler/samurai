@@ -183,40 +183,65 @@ public interface Game {
     int turn();
 
 
-    /**
-     * Returns the initial game state ({@code Board}) before any moves
-     * were played.
-     *
-     * To get a board representing the current state of the game after
-     * some moves where added to it with {@link #makeMove(int)} call
-     * {@link #toBoard()} instead.
-     *
-     * @return Immutable representation of the game state before any move.
-     */
-    Board getBoard();
+    /** Use {@link #getCurrentBoard()}. */
+    @Deprecated
+    default Board toBoard() {
+        return getCurrentBoard();
+    }
+
+
+    /** Use {@link #getStartingBoard()} */
+    @Deprecated
+    default Board getBoard() {
+        return getStartingBoard();
+    }
+
+
+    /** Use {@link #setStartingBoard(Board)}. */
+    @Deprecated
+    default void setBoard(Board board) {
+        setStartingBoard(board);
+    }
 
 
     /**
-     * Returns a representation of the current game state ({@code Board}).
+     * Returns a snapshot of the current board position.
      *
-     * To get a board representing the initial state of the game before
-     * any moves where added to it call {@link #getBoard()} instead.
+     * Contains all information needed to continue play from the current
+     * game state independently of move history: piece placement, turn,
+     * and other game-specific state (e.g., castling rights, en passant,
+     * move counters).
      *
-     * @return A board instance representing the current game state.
+     * @return The current board position
+     * @see #setStartingBoard(Board)
      */
-    Board toBoard();
+    Board getCurrentBoard();
 
 
     /**
-     * Sets a new starting state ({@code Board}).
+     * Returns the setup position from which the game began.
      *
-     * Calling this method resets all game state information and history,
-     * including played moves and the legal move generation state.
+     * This contains all information needed to play from the starting
+     * position. Could be the standard opening, an endgame, or a custom
+     * puzzle setup. Use {@link #getCurrentBoard()} to get a snapshot
+     * of the position after moves have been applied.
      *
-     * @param board The new starting board.
-     * @throws GameEngineException If the provided board is not valid for the game.
+     * @return The original setup position
+     * @see #setStartingBoard(Board)
      */
-    void setBoard(Board board);
+    Board getStartingBoard();
+
+
+    /**
+     * Sets a new setup position and resets the game to that position.
+     *
+     * This establishes a new base position for the game and clears all
+     * game history including performed moves and move generation cursors.
+     *
+     * @param board The new setup position
+     * @throws GameEngineException If the board is invalid for this game
+     */
+    void setStartingBoard(Board board);
 
 
     /**

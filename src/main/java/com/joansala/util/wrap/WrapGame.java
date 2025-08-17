@@ -81,20 +81,20 @@ public class WrapGame implements Game {
 
 
     /** {@inheritDoc} */
-    @Override public Board toBoard() {
-        return game.toBoard();
+    @Override public Board getCurrentBoard() {
+        return game.getCurrentBoard();
     }
 
 
     /** {@inheritDoc} */
-    @Override public Board getBoard() {
-        return game.getBoard();
+    @Override public Board getStartingBoard() {
+        return game.getStartingBoard();
     }
 
 
     /** {@inheritDoc} */
-    @Override public void setBoard(Board board) {
-        game.setBoard(board);
+    @Override public void setStartingBoard(Board board) {
+        game.setStartingBoard(board);
     }
 
 

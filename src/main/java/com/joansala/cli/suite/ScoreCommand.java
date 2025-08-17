@@ -179,7 +179,7 @@ public class ScoreCommand implements Callable<Integer> {
         private void evaluateSuite(Suite suite) {
             engine.newMatch();
             suite.setupGame(game);
-            String diagram = game.toBoard().toDiagram();
+            String diagram = game.getCurrentBoard().toDiagram();
             int score = game.turn() * engine.computeBestScore(game);
             System.out.format("%s, %d%n", diagram, score);
         }

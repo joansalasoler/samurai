@@ -57,7 +57,7 @@ public class UCIPlayer {
      * Create a new UCI player.
      */
     @Inject public UCIPlayer(UCIClient client) {
-        this.parser = client.getBoard();
+        this.parser = client.getCurrentBoard();
         this.client = client;
     }
 

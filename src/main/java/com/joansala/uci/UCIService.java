@@ -98,7 +98,7 @@ public class UCIService {
 
         this.game = new UCIGame(game);
         this.timeManager = new TimeManager();
-        this.board = game.getBoard();
+        this.board = game.getStartingBoard();
         this.engine = engine;
 
         createOptions();
@@ -217,7 +217,7 @@ public class UCIService {
     /**
      * Default initial state of a game.
      */
-    public Board getBoard() {
+    public Board getStartingBoard() {
         return board;
     }
 

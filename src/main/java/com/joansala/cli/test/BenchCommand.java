@@ -152,7 +152,7 @@ public class BenchCommand implements Callable<Integer> {
                 int[] moves = board.toMoves(suite.notation());
 
                 game.ensureCapacity(moves.length);
-                game.setBoard(board);
+                game.setStartingBoard(board);
 
                 engine.newMatch();
                 benchmark(engine, game);
@@ -167,7 +167,7 @@ public class BenchCommand implements Callable<Integer> {
         } catch (Exception e) {
             e.printStackTrace();
 
-            String diagram = game.toBoard().toDiagram();
+            String diagram = game.getCurrentBoard().toDiagram();
             System.err.println("Benchmark exception:");
             System.err.println("\tat " + diagram);
 
