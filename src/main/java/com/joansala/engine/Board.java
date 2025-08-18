@@ -116,6 +116,37 @@ public interface Board {
     int turn();
 
 
+    /**
+     * Returns all symmetric variations of this board position.
+     *
+     * This method generates equivalent board positions that represent
+     * the same game state from different perspectives or orientations
+     * and can be considered identical for evaluation purposes. These
+     * positions have the same strategic value and can be used
+     * interchangeably during analysis.
+     *
+     * Common symmetries include:
+     *
+     * - Player perspective swap (opponent's view)
+     * - Rotational symmetries (90°, 180°, 270°)
+     * - Reflectional symmetries (horizontal, vertical, diagonal)
+     *
+     * The returned array includes this board as the first element,
+     * followed by all distinct symmetric variations. Implementations
+     * should avoid duplicates and return only meaningful symmetries
+     * for the specific game.
+     *
+     * The default implementation returns only this board. Override this
+     * method to provide game-specific symmetries for optimization.
+     *
+     * @return Array of board instances representing all symmetries,
+     *         with this board as the first element
+     */
+    default Board[] symmetries() {
+        return new Board[] { this };
+    }
+
+
     /** Use {@link #fromDiagram(String)}. */
     @Deprecated
     default Board toBoard(String diagram) {
