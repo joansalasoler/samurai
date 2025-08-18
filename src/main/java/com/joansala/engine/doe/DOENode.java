@@ -102,6 +102,37 @@ public class DOENode implements Comparable<DOENode>, Serializable {
 
 
     /**
+     * Checks if this is a root node.
+     *
+     * @return      True if this node has no parent
+     */
+    public boolean isRoot() {
+        return parent == null;
+    }
+
+
+    /**
+     * Checks if this node has children.
+     *
+     * @return      True if this node has at least one child
+     */
+    public boolean hasChildren() {
+        return child != null;
+    }
+
+
+    /**
+     * Checks if this node has more simulations than another.
+     *
+     * @param other     Node to compare against
+     * @return          True if this node has higher visits count
+     */
+    public boolean hasMoreSimulations(DOENode other) {
+        return count > other.count;
+    }
+
+
+    /**
      * Player to move.
      */
     public int getTurn() {

@@ -49,7 +49,7 @@ public class DOEReport implements Report {
      * @param root      Root node
      */
     public DOEReport(DOE engine, Game game, DOENode root) {
-        if (root != null && root.child != null) {
+        if (root != null && root.hasChildren()) {
             collectReport(engine, game, root);
         }
     }
@@ -124,7 +124,7 @@ public class DOEReport implements Report {
      * @return          Best child or {@code null}
      */
     private DOENode nextNode(DOE engine, DOENode node) {
-        return (node.child != null) ? engine.pickBestChild(node) : null;
+        return node.hasChildren() ? engine.pickBestChild(node) : null;
     }
 
 

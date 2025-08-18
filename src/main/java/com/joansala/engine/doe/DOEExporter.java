@@ -69,7 +69,7 @@ public class DOEExporter {
         writer.setSignature(signature);
 
         for (DOENode node : store.values()) {
-            if (node.evaluated && node.parent != null) {
+            if (node.evaluated && !node.isRoot()) {
                 if (node.count >= minCount) {
                     writer.writeEntry(toBookEntry(node));
                     count++;
