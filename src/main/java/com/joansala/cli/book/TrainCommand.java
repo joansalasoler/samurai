@@ -18,6 +18,7 @@ package com.joansala.cli.book;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -52,7 +53,6 @@ public class TrainCommand implements Callable<Integer> {
 
     /** Root game state */
     private final Game rootGame;
-
 
     @Option(
       names = "--path",
@@ -176,7 +176,7 @@ public class TrainCommand implements Callable<Integer> {
     /**
      * Obtain an evaluation engine instance.
      */
-    private Engine getEngineInstance() {
+    private Engine getNewEngineInstance() {
         Class<Engine> type = engineType.getType();
         Engine engine = injector.getInstance(type);
 
@@ -190,7 +190,7 @@ public class TrainCommand implements Callable<Integer> {
     /**
      * Obtain a game instance.
      */
-    private Game getGameInstance() {
+    private Game getNewGameInstance() {
         return injector.getInstance(Game.class);
     }
 
@@ -280,15 +280,14 @@ public class TrainCommand implements Callable<Integer> {
 
 
     /**
-     * Evaluates a game states using an engine.
+     * Evaluates game states using an engine.
+     *
+     * This class encapsulates the evaluation logic for positions reached
+     * through a sequence of moves. It creates its own engine instance
+     * and can leverage previously computed scores from symmetric positions
+     * to avoid redundant calculations.
      */
     protected class Evaluator {
-
-        /** Game for position evaluation */
-        private Game game;
-
-        /** Engine instance for score computation */
-        private Engine engine;
 
         /** DOE store reference */
         private DOEStore store;
@@ -297,40 +296,79 @@ public class TrainCommand implements Callable<Integer> {
         /**
          * Creates a new evaluator instance.
          *
-         * @param store the DOE store to use
+         * @param store     Store to lookup symmetric positions
          */
         protected Evaluator(DOEStore store) {
-            this.game = getGameInstance();
-            this.engine = getEngineInstance();
             this.store = store;
-        }
-
-
-        /**
-         * Sets up the game position by applying the given moves.
-         *
-         * @param moves array of moves to apply to the root position
-         */
-        protected void setMoves(int[] moves) {
-            game.setStartingBoard(rootBoard);
-            game.ensureCapacity(moves.length);
-
-            for (int move : moves) {
-                game.makeMove(move);
-            }
         }
 
 
         /**
          * Computes the score for a position reached by the given moves.
          *
-         * @param moves array of moves leading to the position to evaluate
-         * @return the computed score for the position
+         * @param moves     Moves to replay on the root board
+         * @return          The computed score for the resulting position
          */
         protected int computeScore(int[] moves) {
-            setMoves(moves);
-            engine.newMatch();
-            return engine.computeBestScore(game);
+            Game game = getNewGameInstance();
+
+            // Replay the provided variation
+
+            game.setStartingBoard(rootBoard);
+            game.ensureCapacity(moves.length);
+
+            for (int move : moves) {
+                game.makeMove(move);
+            }
+
+            // Check if we already evaluated a similar position
+
+            Board board = game.getCurrentBoard();
+            DOENode node = findSymmetricNode(board);
+
+            if (node != null) {
+                int turn = node.getTurn() * game.turn();
+                return turn * (int) node.getScore();
+            }
+
+            // No symmetry found, compute new score
+
+            Engine engine = getNewEngineInstance();
+            int score = engine.computeBestScore(game);
+
+            return score;
+        }
+
+
+        /**
+         * Finds the most reliable evaluation from all symmetric positions
+         * that can be found in the store.
+         *
+         * @param board     Board for which to find symmetries
+         * @return          Node with the highest visit count among all
+         *                  symmetric positions, or null if no symmetric
+         *                  positions have been evaluated
+         */
+        private DOENode findSymmetricNode(Board board) {
+            Game game = getNewGameInstance();
+            DOENode bestNode = null;
+
+            for (Board symmetry : board.symmetries()) {
+                game.setStartingBoard(symmetry);
+
+                long hash = game.hash();
+                List<DOENode> nodes = store.find(hash);
+
+                for (DOENode node : nodes) {
+                    if (bestNode == null) {
+                        bestNode = node;
+                    } else if (node.hasMoreSimulations(bestNode)) {
+                        bestNode = node;
+                    }
+                }
+            }
+
+            return bestNode;
         }
     }
 }
