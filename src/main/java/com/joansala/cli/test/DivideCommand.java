@@ -123,6 +123,7 @@ public class DivideCommand implements Callable<Integer> {
      * @param game      Game instance
      */
     private void benchmark(Game game, int depth) {
+        Board parser = game.getStartingBoard();
         stats.visits().clear();
 
         for (int move : game.legalMoves()) {
