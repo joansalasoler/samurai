@@ -68,6 +68,9 @@ public class DOEExporter {
         writer.setHeaders(headers);
         writer.setSignature(signature);
 
+        // Nodes are stored in order of parent hash, so they can be
+        // efficiently located using a simple binary search.
+
         for (DOENode node : store.values()) {
             if (node.evaluated && !node.isRoot()) {
                 if (node.count >= minCount) {

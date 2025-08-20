@@ -20,8 +20,11 @@ package com.joansala.book.uct;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.LinkedList;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.joansala.engine.Engine;
 import com.joansala.engine.Game;
@@ -249,15 +252,13 @@ public class UCTRoots implements Closeable, Roots<Game> {
      * @return          Book entries
      */
     protected List<BookEntry> readChildren(Game game) throws IOException {
-        List<BookEntry> entries = new LinkedList<>();
-        long parent = game.hash();
+        List<BookEntry> entries = reader.readChildren(game.hash());
 
-        for (long child : childHashes(game)) {
-            final BookEntry entry;
-
-            if ((entry = reader.readEntry(parent, child)) != null) {
-                entries.add(entry);
-            }
+        if (entries.isEmpty() == false) {
+            long[] hashes = childHashes(game);
+            Stream<Long> stream = Arrays.stream(hashes).boxed();
+            Set<Long> childs = stream.collect(Collectors.toSet());
+            entries.removeIf(e -> !childs.contains(e.getHash()));
         }
 
         return entries;

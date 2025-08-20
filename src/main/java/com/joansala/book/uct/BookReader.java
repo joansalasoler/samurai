@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import com.joansala.util.Settings;
 import static com.joansala.book.uct.BookEntry.*;
@@ -96,14 +98,39 @@ public class BookReader implements Closeable {
      * @return          Book entry or {@code null}
      */
     public BookEntry readEntry(long parent, long child) throws IOException {
-        BookEntry entry = null;
+        for (BookEntry entry : readChildren(parent)) {
+            if (entry.getHash() == child) {
+                return entry;
+            }
+        }
+        return null;
+    }
 
-        if (seekEntry(parent, child) == true) {
-            entry = new BookEntry();
-            entry.readData(file);
+
+    /**
+     * Reads all book entries for the given parent hash.
+     *
+     * @param parent    Game state parent hash
+     * @return          List of book entries
+     */
+    public List<BookEntry> readChildren(long parent) throws IOException {
+        List<BookEntry> entries = new LinkedList<>();
+
+        if (seekParent(parent)) {
+            BookEntry entry = new BookEntry();
+
+            while (file.getFilePointer() < file.length()) {
+                entry.readData(file);
+
+                if (entry.getParent() == parent) {
+                    entries.add(entry.clone());
+                } else {
+                    break;
+                }
+            }
         }
 
-        return entry;
+        return entries;
     }
 
 
@@ -137,36 +164,36 @@ public class BookReader implements Closeable {
 
 
     /**
-     * Seeks a hash code on the random access file.
+     * Seeks the first entry with the given parent hash.
      *
      * @param parent    Parent node hash code
-     * @param child     Child node hash code
-     * @return          Whether the hash was found
+     * @return          Whether any entry with this parent was found
      */
-    private boolean seekEntry(long parent, long child) throws IOException {
+    private boolean seekParent(long parent) throws IOException {
         long ceiling = size - 1;
         long floor = 0;
+        long result = -1;
 
         while (floor <= ceiling) {
             long middle = (floor + ceiling) / 2;
             long position = offset + middle * ENTRY_SIZE;
 
             file.seek(position);
-            long p = file.readLong();
-            long c = file.readLong();
+            long hash = file.readLong();
 
-            if (p == parent && c == child) {
-                file.seek(position);
-                return true;
-            } else if (p == parent && c < child) {
-                floor = middle + 1;
-            } else if (p == parent && c > child) {
+            if (hash == parent) {
+                result = middle;
                 ceiling = middle - 1;
-            } else if (p < parent) {
+            } else if (hash < parent) {
                 floor = middle + 1;
-            } else if (p > parent) {
+            } else {
                 ceiling = middle - 1;
             }
+        }
+
+        if (result != -1) {
+            file.seek(offset + result * ENTRY_SIZE);
+            return true;
         }
 
         return false;
