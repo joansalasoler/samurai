@@ -201,6 +201,25 @@ public class BookReader implements Closeable {
 
 
     /**
+     * Returns all entries in the book.
+     *
+     * @return          List of book entries
+     */
+    public List<BookEntry> entries() throws IOException {
+        List<BookEntry> entries = new LinkedList<>();
+        file.seek(offset);
+
+        for (long i = 0; i < size; i++) {
+            BookEntry entry = new BookEntry();
+            entry.readData(file);
+            entries.add(entry);
+        }
+
+        return entries;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override

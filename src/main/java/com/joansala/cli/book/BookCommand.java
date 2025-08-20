@@ -29,6 +29,7 @@ import picocli.CommandLine.*;
   description = "Opening book utilities",
   mixinStandardHelpOptions = true,
   subcommands = {
+      DumpCommand.class,
       QueryCommand.class,
       ExportCommand.class,
       TrainCommand.class,
