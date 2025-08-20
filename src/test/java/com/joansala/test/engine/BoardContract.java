@@ -123,4 +123,25 @@ public interface BoardContract {
             instance.toNotation(moves);
         });
     }
+
+
+    @Test
+    @DisplayName("symmetries returns non-null array")
+    default void SymmetriesReturnsNonNullArray() {
+        Board board = newInstance();
+        Board[] symmetries = board.symmetries();
+        assertNotNull(symmetries);
+        assertTrue(symmetries.length > 0);
+        assertSame(board, symmetries[0]);
+    }
+
+
+    @Test
+    @DisplayName("fromDiagram creates board of same type")
+    default void fromDiagramCreatesBoardOfSameType() {
+        Board board = newInstance();
+        String diagram = board.toDiagram();
+        Board newBoard = board.fromDiagram(diagram);
+        assertEquals(board.getClass(), newBoard.getClass());
+    }
 }
