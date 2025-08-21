@@ -19,14 +19,20 @@ public interface BoardContract {
     /**
      * Instantiate a new board object.
      */
-    Board newInstance();
+    Board newBoard();
+
+
+    /**
+     * Instantiate a new game object.
+     */
+    Game newGame();
 
 
     @ParameterizedTest()
     @MethodSource("suites")
     @DisplayName("diagram to board peserves class type")
     default void ToBoardIsOfSameClassType(Suite suite) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         String diagram = suite.diagram();
         Board board = instance.fromDiagram(diagram);
         assertEquals(instance.getClass(), board.getClass());
@@ -37,7 +43,7 @@ public interface BoardContract {
     @MethodSource("suites")
     @DisplayName("diagram to board is commutative")
     default void ToBoardConversionIsCommutative(Suite suite) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         String diagram = suite.diagram();
         Board board = instance.fromDiagram(diagram);
         String converted = board.toDiagram();
@@ -49,7 +55,7 @@ public interface BoardContract {
     @MethodSource("suites")
     @DisplayName("notation to moves is not a blank array")
     default void ToMovesIsNotBlank(Suite suite) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         String notation = suite.notation();
         int[] moves = instance.parseNotation(notation);
         assertNotNull(moves, "moves array is null");
@@ -61,7 +67,7 @@ public interface BoardContract {
     @MethodSource("suites")
     @DisplayName("notation to moves is commutative")
     default void ToMovesIsCommutative(Suite suite) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         String notation = suite.notation();
         int[] moves = instance.parseNotation(notation);
         String converted = instance.toNotation(moves);
@@ -74,7 +80,7 @@ public interface BoardContract {
     @NullSource @EmptySource @ValueSource(strings = {" ", "  ", "\t", "\n"})
     @DisplayName("notation to moves returns empty array")
     default void ToMovesReturnsEmptyArray(String notation) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         int[] moves = instance.parseNotation(notation);
         assertTrue(moves.length == 0, "moves not empty");
     }
@@ -84,7 +90,7 @@ public interface BoardContract {
     @NullSource @EmptySource @ValueSource(strings = {" ", "  ", "\t", "\n"})
     @DisplayName("diagram to board throws runtime exception")
     default void ToBoardThrowsRuntimeException(String notation) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         assertThrows(RuntimeException.class, () -> {
             instance.fromDiagram(notation);
         });
@@ -95,7 +101,7 @@ public interface BoardContract {
     @NullSource @EmptySource @ValueSource(strings = {" ", "  ", "\t", "\n"})
     @DisplayName("notation to move throws runtime exception")
     default void ToMoveThrowsRuntimeException(String notation) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         assertThrows(RuntimeException.class, () -> {
             instance.parseCoordinates(notation);
         });
@@ -106,7 +112,7 @@ public interface BoardContract {
     @ValueSource(ints = { Game.NULL_MOVE, Integer.MIN_VALUE })
     @DisplayName("move to coordinates throws runtime exception")
     default void ToCoordinateThrowsRuntimeException(int move) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         assertThrows(RuntimeException.class, () -> {
             instance.toCoordinates(move);
         });
@@ -117,7 +123,7 @@ public interface BoardContract {
     @ValueSource(ints = { Game.NULL_MOVE, Integer.MIN_VALUE })
     @DisplayName("move to notation throws runtime exception")
     default void ToNotationThrowsRuntimeException(int move) {
-        Board instance = newInstance();
+        Board instance = newBoard();
         assertThrows(RuntimeException.class, () -> {
             int[] moves = { move };
             instance.toNotation(moves);
@@ -128,20 +134,42 @@ public interface BoardContract {
     @Test
     @DisplayName("symmetries returns non-null array")
     default void SymmetriesReturnsNonNullArray() {
-        Board board = newInstance();
+        Board board = newBoard();
         Board[] symmetries = board.symmetries();
         assertNotNull(symmetries);
         assertTrue(symmetries.length > 0);
-        assertSame(board, symmetries[0]);
+        assertEquals(board.hash(), symmetries[0].hash());
     }
 
 
     @Test
     @DisplayName("fromDiagram creates board of same type")
     default void fromDiagramCreatesBoardOfSameType() {
-        Board board = newInstance();
+        Board board = newBoard();
         String diagram = board.toDiagram();
         Board newBoard = board.fromDiagram(diagram);
         assertEquals(board.getClass(), newBoard.getClass());
+    }
+
+
+    @Test
+    @DisplayName("board hash matches game hash for equivalent states")
+    default void BoardHashMatchesGameHash() {
+        Board board = newBoard();
+        Game game = newGame();
+        game.setStartingBoard(board);
+        assertEquals(board.hash(), game.hash());
+    }
+
+
+    @ParameterizedTest()
+    @MethodSource("suites")
+    @DisplayName("board hash matches game hash for suite positions")
+    default void BoardHashMatchesGameHashForSuites(Suite suite) {
+        Board instance = newBoard();
+        Board board = instance.fromDiagram(suite.diagram());
+        Game game = newGame();
+        game.setStartingBoard(board);
+        assertEquals(board.hash(), game.hash());
     }
 }

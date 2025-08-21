@@ -301,6 +301,24 @@ public interface Board {
 
 
     /**
+     * Hash code for the current board position, used for indexing and
+     * faster comparisons between positions.
+     *
+     * It is crucial for the hash code of two distinct positions to be
+     * unique or near-unique to avoid collisions, and for two equal
+     * positions to always return the same hash code, even between
+     * different game sessions.
+     *
+     * The returned hash must be exactly the same as the hash returned
+     * by the corresponding {@link Game#hash()} method when the game's
+     * current state is equivalent to this board's state.
+     *
+     * @return The hash code for the current position
+     */
+    long hash();
+
+
+    /**
      * Generates a human-readable string representation of the current
      * board state.
      *

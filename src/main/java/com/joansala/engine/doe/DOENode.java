@@ -143,7 +143,7 @@ public class DOENode implements Comparable<DOENode>, Serializable {
     /**
      * Number of expanded childs.
      */
-    public double getCount() {
+    public long getCount() {
         return count;
     }
 

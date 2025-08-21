@@ -155,6 +155,15 @@ public class MockBoard implements Board {
 
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long hash() {
+        return hashCode();
+    }
+
+
+    /**
      * Asserts a value represents a valid turn for a game.
      * @throws GameEngineException If not valid
      */

@@ -82,8 +82,12 @@ public interface GameContract {
         int infinity = game.infinity();
         int score = game.score();
         int outcome = game.outcome();
-        assertTrue(Math.abs(score) <= infinity);
-        assertTrue(Math.abs(outcome) <= infinity);
+
+        assertTrue(Math.abs(score) <= infinity,
+            () -> "Score " + Math.abs(score) + " must be ≤ " + infinity);
+
+        assertTrue(Math.abs(outcome) <= infinity,
+            () -> "Outcome " + Math.abs(score) + " must be ≤ " + infinity);
     }
 
 
