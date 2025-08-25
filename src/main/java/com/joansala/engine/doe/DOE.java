@@ -268,6 +268,10 @@ public class DOE extends BaseEngine {
     /**
      * Pick the child node with the highest expansion priority.
      *
+     * If multiple nodes have the same expansion priority, one of them
+     * is chosen at random to ensure that all nodes have an equal
+     * probability of being expanded.
+     *
      * @param node      Parent node
      * @return          A child node
      */
@@ -276,6 +280,7 @@ public class DOE extends BaseEngine {
         DOENode bestNode = store.read(parent.child);
         double factor = Math.log(parent.count);
         double bestScore = computePriority(child, factor);
+        int tieCount = 1;
 
         while ((child = store.read(child.sibling)) != null) {
             double score = computePriority(child, factor);
@@ -283,6 +288,10 @@ public class DOE extends BaseEngine {
             if (score < bestScore) {
                 bestScore = score;
                 bestNode = child;
+            } else if (score == bestScore) {
+                if (Math.random() < 1.0 / ++tieCount) {
+                    bestNode = child;
+                }
             }
         }
 
