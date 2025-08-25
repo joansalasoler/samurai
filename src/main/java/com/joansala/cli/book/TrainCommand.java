@@ -350,17 +350,20 @@ public class TrainCommand implements Callable<Integer> {
          *                  positions have been evaluated
          */
         private DOENode findSymmetricNode(Board board) {
-            Game game = getNewGameInstance();
+            long boardHash = board.hash();
             DOENode bestNode = null;
 
             for (Board symmetry : board.symmetries()) {
-                game.setStartingBoard(symmetry);
+                long symmetryHash = symmetry.hash();
 
-                long hash = game.hash();
-                List<DOENode> nodes = store.find(hash);
+                if (boardHash == symmetryHash) {
+                    continue;
+                }
 
-                for (DOENode node : nodes) {
-                    if (bestNode == null) {
+                for (DOENode node : store.find(symmetryHash)) {
+                    if (!node.isEvaluated()) {
+                        continue;
+                    } else if (bestNode == null) {
                         bestNode = node;
                     } else if (node.hasMoreSimulations(bestNode)) {
                         bestNode = node;

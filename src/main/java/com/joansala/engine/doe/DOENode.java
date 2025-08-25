@@ -112,6 +112,16 @@ public class DOENode implements Comparable<DOENode>, Serializable {
 
 
     /**
+     * Checks if this node was evaluated.
+     *
+     * @return      If this node is flagged as evaluated
+     */
+    public boolean isEvaluated() {
+        return evaluated;
+    }
+
+
+    /**
      * Checks if this node has children.
      *
      * @return      True if this node has at least one child
@@ -153,6 +163,14 @@ public class DOENode implements Comparable<DOENode>, Serializable {
      */
     public double getScore() {
         return score;
+    }
+
+
+    /**
+     * Hash code of the node.
+     */
+    public long getHash() {
+        return hash;
     }
 
 
