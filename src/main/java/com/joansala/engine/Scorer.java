@@ -53,6 +53,12 @@ package com.joansala.engine;
 public interface Scorer<T extends Game> {
 
     /**
+     * Signals the start of a new match.
+     */
+    default void newMatch() {}
+
+
+    /**
      * Evaluates the current state of the game.
      *
      * @param game  State to be evaluated.

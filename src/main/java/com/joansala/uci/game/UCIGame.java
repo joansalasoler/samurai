@@ -43,7 +43,7 @@ public final class UCIGame extends WrapGame {
     private int noiseLevel = 0;
 
     /** Randomization value for the current match */
-    private long randomizer;
+    private long salt;
 
 
     /**
@@ -59,7 +59,8 @@ public final class UCIGame extends WrapGame {
      * Instructs this object a new match is about to start.
      */
     public void newMatch() {
-        randomizer = nextRandomLong();
+        super.newMatch();
+        salt = nextRandomLong();
     }
 
 
@@ -86,7 +87,7 @@ public final class UCIGame extends WrapGame {
      * Obtain a random noise score for the current state.
      */
     private int noise() {
-        final long value = randomizer * hash();
+        final long value = salt * hash();
         final int noise = (int) (value >> noiseShift);
         return noiseLevel > 0 ? noise : 0;
     }

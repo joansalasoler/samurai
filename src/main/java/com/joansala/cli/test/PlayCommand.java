@@ -136,6 +136,7 @@ public class PlayCommand implements Callable<Integer> {
                 Board board = parser.fromDiagram(suite.diagram());
                 int[] moves = board.parseNotation(suite.notation());
 
+                game.newMatch();
                 game.ensureCapacity(moves.length);
                 game.setStartingBoard(board);
 

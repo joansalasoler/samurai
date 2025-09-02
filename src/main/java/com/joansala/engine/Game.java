@@ -205,6 +205,12 @@ public interface Game {
 
 
     /**
+     * Signals the start of a new match.
+     */
+    default void newMatch() {}
+
+
+    /**
      * Returns a snapshot of the current board position.
      *
      * Contains all information needed to continue play from the current

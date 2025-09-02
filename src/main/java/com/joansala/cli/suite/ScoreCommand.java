@@ -177,6 +177,7 @@ public class ScoreCommand implements Callable<Integer> {
          * Compute the best score for a state.
          */
         private void evaluateSuite(Suite suite) {
+            game.newMatch();
             engine.newMatch();
             suite.setupGame(game);
             String diagram = game.getCurrentBoard().toDiagram();
