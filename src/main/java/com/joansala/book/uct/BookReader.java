@@ -117,13 +117,12 @@ public class BookReader implements Closeable {
         List<BookEntry> entries = new LinkedList<>();
 
         if (seekParent(parent)) {
-            BookEntry entry = new BookEntry();
-
             while (file.getFilePointer() < file.length()) {
+                BookEntry entry = new BookEntry();
                 entry.readData(file);
 
                 if (entry.getParent() == parent) {
-                    entries.add(entry.clone());
+                    entries.add(entry);
                 } else {
                     break;
                 }
