@@ -58,6 +58,19 @@ public class MainCommand {
 
 
     /**
+     * Create a new command line for a module.
+     *
+     * @param module        Game module
+     * @return              Command line instance
+     */
+    public CommandLine newCommandLine(BaseModule module) {
+        MainCommand.module = module;
+        CommandFactory factory = new CommandFactory(module);
+        return new CommandLine(this, factory);
+    }
+
+
+    /**
      * Execute a command line interface for a module.
      *
      * @param module        Game module
@@ -65,9 +78,7 @@ public class MainCommand {
      * @return              Exit code
      */
     public int execute(BaseModule module, String[] args) {
-        MainCommand.module = module;
-        CommandFactory factory = new CommandFactory(module);
-        CommandLine main = new CommandLine(this, factory);
+        CommandLine main = newCommandLine(module);
         String name = main.getCommandName();
 
         Settings.load(String.format("%s.properties", name));
@@ -75,5 +86,18 @@ public class MainCommand {
         main.setDefaultValueProvider(Settings.getDefaultsProvider());
 
         return main.execute(args);
+    }
+
+
+    /**
+     * Print an error message and the usage of the command line.
+     *
+     * @param module        Game module
+     * @param exception     Exception to report
+     */
+    public void error(BaseModule module, Exception exception) {
+        CommandLine main = newCommandLine(module);
+        main.getErr().println(exception.getLocalizedMessage());
+        main.usage(main.getErr());
     }
 }
