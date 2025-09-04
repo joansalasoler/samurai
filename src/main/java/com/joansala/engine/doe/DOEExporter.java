@@ -22,7 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import com.joansala.book.uct.BookEntry;
 import com.joansala.book.uct.BookWriter;
 
@@ -48,7 +49,7 @@ public class DOEExporter {
      * @param store     DOE database store
      */
     public DOEExporter(DOEStore store) {
-        this.headers = new HashMap<>();
+        this.headers = new LinkedHashMap<>();
         this.store = store;
     }
 
@@ -61,7 +62,7 @@ public class DOEExporter {
      *
      * @return          Number of nodes exported
      */
-    public long export(String path, long minCount) throws IOException {
+    public long exportBook(String path, long minCount) throws IOException {
         BookWriter writer = new BookWriter(new File(path));
         long count = 0L;
 
@@ -82,6 +83,8 @@ public class DOEExporter {
 
         headers.put("Date", String.valueOf(new Date()));
         headers.put("Entries", String.valueOf(count));
+        headers.put("Origin store size", String.valueOf(store.count()));
+        headers.put("Minimum expansions", String.valueOf(minCount));
 
         writer.save();
         writer.close();

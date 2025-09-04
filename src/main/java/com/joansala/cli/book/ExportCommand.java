@@ -68,9 +68,8 @@ public class ExportCommand implements Callable<Integer> {
             System.out.println("Done.");
         }));
 
-        long count = exporter.export(outputPath, minCount);
-
         System.out.format("%nExporting book%n%s%n", horizontalRule('-'));
+        long count = exporter.exportBook(outputPath, minCount);
         System.out.format("Entries: %d%n", count);
 
         return 0;

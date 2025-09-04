@@ -43,13 +43,13 @@ public class DOENode implements Comparable<DOENode>, Serializable {
     @SecondaryKey(relate=Relationship.MANY_TO_ONE)
     long hash = 0x00;
 
-    /** Parent of this node */
+    /** Parent ID of this node */
     Long parent = null;
 
-    /** First child of this node */
+    /** First child ID of this node */
     Long child = null;
 
-    /** First sibling of this node */
+    /** First sibling ID of this node */
     Long sibling = null;
 
     /** Performed move to reach the node */
@@ -163,6 +163,14 @@ public class DOENode implements Comparable<DOENode>, Serializable {
      */
     public double getScore() {
         return score;
+    }
+
+
+    /**
+     * Hash code of the node's parent.
+     */
+    public long getParent() {
+        return parent;
     }
 
 
