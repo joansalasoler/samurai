@@ -18,7 +18,6 @@ package com.joansala.cli.book;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;

@@ -40,9 +40,6 @@ public class UCTRoots implements Closeable, Roots<Game> {
     /** Reads the book data from a file */
     private final BookReader reader;
 
-    /** Disturbance score */
-    private int disturbance = Game.DRAW_SCORE;
-
     /** Threshold score */
     private int threshold = Game.DRAW_SCORE;
 
@@ -66,17 +63,6 @@ public class UCTRoots implements Closeable, Roots<Game> {
      */
     public UCTRoots(String path) throws IOException {
         reader = new BookReader(path);
-    }
-
-
-    /**
-     * Choose moves only if their score is above this distance from
-     * the best score found on its siblings.
-     *
-     * @param score     Disturbance score
-     */
-    public void setDisturbance(int score) {
-        disturbance = Math.abs(score);
     }
 
 
@@ -117,9 +103,47 @@ public class UCTRoots implements Closeable, Roots<Game> {
      * @param node      A node
      * @return          Score of the node
      */
-    private double selectionScore(BookEntry entry) {
+    public double selectionScore(BookEntry entry) {
         final double bound = maxScore / Math.sqrt(entry.getCount());
         return -(entry.getScore() + bound);
+    }
+
+
+    /**
+     * Filters entries to keep only the best based on selection score.
+     *
+     * @param entries       List of entries to filter
+     * @return              Filtered list of best entries
+     */
+    private List<BookEntry> filterBestEntries(List<BookEntry> entries) {
+        if (entries.isEmpty() == false) {
+            BookEntry best = pickSecureEntry(entries);
+            entries.removeIf(e -> selectionScore(e) < threshold);
+            entries.removeIf(e -> e != best && isInferior(best, e));
+        }
+
+        return entries;
+    }
+
+
+    /**
+     * Determines if two entries are statistically different.
+     *
+     * Checks if the second entry is statistically inferior to the first
+     * entry using a t-test with 90% confidence level. This is a rough
+     * approximation of the statistical test.
+     *
+     * @param entry     The reference entry (potentially superior)
+     * @param other     The entry being compared (potentially inferior)
+     * @return          If the other entry is inferior
+     */
+    private boolean isInferior(BookEntry entry, BookEntry other) {
+        double ds = Math.abs(entry.getScore() - other.getScore());
+        double se1 = maxScore / Math.sqrt(entry.getCount());
+        double se2 = maxScore / Math.sqrt(other.getCount());
+        double t = ds / Math.sqrt(se1 * se1 + se2 * se2);
+
+        return t > 1.645;
     }
 
 
@@ -137,6 +161,18 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
+     * Lists all the book entries for a game state.
+     *
+     * @param game      Game state to query
+     * @return          List of legal book entries
+     */
+    public List<BookEntry> findBestEntries(Game game) throws IOException {
+        List<BookEntry> entries = findEntries(game);
+        return filterBestEntries(entries);
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -148,11 +184,7 @@ public class UCTRoots implements Closeable, Roots<Game> {
         List<BookEntry> entries = findEntries(game);
 
         if ((outOfBook = entries.isEmpty()) == false) {
-            BookEntry secure = pickSecureEntry(entries);
-            double bestScore = selectionScore(secure);
-            double minScore = Math.max(bestScore - disturbance, threshold);
-
-            entries.removeIf(e -> selectionScore(e) < minScore);
+            entries = filterBestEntries(entries);
 
             if ((outOfBook = entries.isEmpty()) == false) {
                 return pickRandomEntry(entries).getMove();
