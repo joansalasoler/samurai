@@ -34,8 +34,11 @@ public class DOEReport implements Report {
     /** Maximum search depth reached */
     private int depth = 0;
 
-    /** Current evaluation of the game */
+    /** Current evaluation score */
     private int score = 0;
+
+    /** Current evaluation in centipawns */
+    private int centipawns = 0;
 
     /** Moves of the principal variation */
     private int[] variation = {};
@@ -86,6 +89,15 @@ public class DOEReport implements Report {
      * {@inheritDoc}
      */
     @Override
+    public int getCentipawns() {
+        return centipawns;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int[] getVariation() {
         return variation;
     }
@@ -108,7 +120,8 @@ public class DOEReport implements Report {
         }
 
         moves.add(0, bestChild.move);
-        score = game.toCentiPawns((int) -bestChild.score);
+        score = (int) -bestChild.score;
+        centipawns = game.toCentiPawns(score);
         variation = toArray(moves);
         depth = moves.size();
     }

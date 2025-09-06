@@ -36,9 +36,15 @@ public interface Report {
 
 
     /**
-     * Current score in centipawns.
+     * Current score.
      */
     int getScore();
+
+
+    /**
+     * Current score in centipawns.
+     */
+    int getCentipawns();
 
 
     /**

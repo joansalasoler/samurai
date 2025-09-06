@@ -348,7 +348,7 @@ public class UCIBrain extends Thread {
         StringJoiner message = new StringJoiner(" ");
 
         int flag = report.getFlag();
-        int score = report.getScore();
+        int score = report.getCentipawns();
         int depth = report.getDepth();
         int[] variation = report.getVariation();
 

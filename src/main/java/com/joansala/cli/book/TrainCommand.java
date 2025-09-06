@@ -142,10 +142,10 @@ public class TrainCommand implements Callable<Integer> {
 
         trainer.attachConsumer(report -> {
             final int[] moves = report.getVariation();
-            final int centis = report.getScore();
+            final int score = report.getScore();
             final long count = store.count();
 
-            String result = formatResult(moves, centis, count);
+            String result = formatResult(moves, score, count);
             System.out.format("= %s%n", result);
         });
 
@@ -155,10 +155,9 @@ public class TrainCommand implements Callable<Integer> {
             try {
                 Evaluator evaluator = evaluators.take();
                 final double score = evaluator.computeScore(moves);
-                final int centis = rootGame.toCentiPawns((int) score);
                 final long count = store.count();
 
-                String result = formatResult(moves, centis, count);
+                String result = formatResult(moves, (int) score, count);
                 System.out.format("- %s%n", result);
 
                 evaluators.put(evaluator);

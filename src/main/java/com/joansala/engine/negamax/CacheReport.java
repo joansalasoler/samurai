@@ -34,8 +34,11 @@ public class CacheReport implements Report {
     /** Maximum search depth reached */
     private int depth = 0;
 
-    /** Current evaluation of the game */
+    /** Current evaluation score */
     private int score = 0;
+
+    /** Current evaluation in centipawns */
+    private int centipawns = 0;
 
     /** Moves of the principal variation */
     private int[] variation = {};
@@ -86,6 +89,15 @@ public class CacheReport implements Report {
      * {@inheritDoc}
      */
     @Override
+    public int getCentipawns() {
+        return centipawns;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int[] getVariation() {
         return variation;
     }
@@ -106,7 +118,8 @@ public class CacheReport implements Report {
         if (cache == null || !cache.find(game)) {
             depth = 0;
             flag = Flag.EXACT;
-            score = -game.toCentiPawns(bestScore);
+            score = -bestScore;
+            centipawns = game.toCentiPawns(score);
             variation = new int[1];
             variation[0] = bestMove;
             game.unmakeMove();
@@ -117,7 +130,8 @@ public class CacheReport implements Report {
 
         flag = cache.getFlag();
         depth = 1 + cache.getDepth();
-        score = -game.toCentiPawns(cache.getScore());
+        score = -cache.getScore();
+        centipawns = game.toCentiPawns(score);
 
         // Collect principal variation
 
