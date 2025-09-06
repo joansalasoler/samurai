@@ -154,8 +154,8 @@ public class TrainCommand implements Callable<Integer> {
         trainer.train(nodeSize, rootGame, (moves) -> {
             try {
                 Evaluator evaluator = evaluators.take();
-                final int score = evaluator.computeScore(moves);
-                final int centis = rootGame.toCentiPawns(score);
+                final double score = evaluator.computeScore(moves);
+                final int centis = rootGame.toCentiPawns((int) score);
                 final long count = store.count();
 
                 String result = formatResult(moves, centis, count);
@@ -308,7 +308,7 @@ public class TrainCommand implements Callable<Integer> {
          * @param moves     Moves to replay on the root board
          * @return          The computed score for the resulting position
          */
-        protected int computeScore(int[] moves) {
+        protected double computeScore(int[] moves) {
             Game game = getNewGameInstance();
 
             // Replay the provided variation
@@ -326,8 +326,7 @@ public class TrainCommand implements Callable<Integer> {
             DOENode node = findSymmetricNode(board);
 
             if (node != null) {
-                int turn = node.getTurn() * game.turn();
-                return turn * (int) node.getScore();
+                return node.getScore();
             }
 
             // No symmetry found, compute new score

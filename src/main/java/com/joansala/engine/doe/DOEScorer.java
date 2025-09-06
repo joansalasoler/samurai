@@ -23,9 +23,9 @@ import java.util.function.Function;
 /**
  * A function that evaluates a game path.
  */
-public interface DOEScorer extends Function<int[], Integer> {
+public interface DOEScorer extends Function<int[], Double> {
 
     /** {@inheritDoc} */
-    @Override Integer apply(int[] moves);
+    @Override Double apply(int[] moves);
 
 }

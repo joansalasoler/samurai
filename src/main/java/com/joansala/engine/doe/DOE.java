@@ -338,7 +338,7 @@ public class DOE extends BaseEngine {
      * @param scorer    Evaluation function
      */
     private void evaluate(DOENode node, DOEScorer scorer) {
-        int score = scorer.apply(node.moves);
+        double score = scorer.apply(node.moves);
 
         synchronized (lock) {
             node.evaluated = true;

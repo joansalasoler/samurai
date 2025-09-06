@@ -159,7 +159,7 @@ public class DOENode implements Comparable<DOENode>, Serializable {
 
 
     /**
-     * Current average score.
+     * Current average score for the side to move.
      */
     public double getScore() {
         return score;
