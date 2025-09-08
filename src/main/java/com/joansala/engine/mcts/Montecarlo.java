@@ -1,7 +1,7 @@
 package com.joansala.engine.mcts;
 
 /*
- * Copyright (C) 2021-2024 Joan Sala Soler <contact@joansala.com>
+ * Copyright (C) 2021-2025 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,9 @@ package com.joansala.engine.mcts;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import com.joansala.engine.Game;
 import com.joansala.engine.uct.UCT;
+import com.joansala.scorers.MontecarloScorer;
 
 
 /**
@@ -36,8 +35,8 @@ public class Montecarlo extends UCT {
     /** Factors the amount of exploration of the tree */
     public static final double DEFAULT_BIAS = 0.707;
 
-    /** Random number generator */
-    private Random random = ThreadLocalRandom.current();
+    /** Heuristic evaluation with random playouts */
+    private static MontecarloScorer scorer = new MontecarloScorer();
 
 
     /**
@@ -53,45 +52,6 @@ public class Montecarlo extends UCT {
      */
     @Override
     protected int simulateMatch(Game game, int maxDepth) {
-        int depth = 0;
-
-        while (depth < maxDepth && !game.hasEnded()) {
-            final int move = getRandomMove(game);
-            game.makeMove(move);
-            depth++;
-        }
-
-        final int score = game.outcome();
-
-        for (int i = 0; i < depth; i++) {
-            game.unmakeMove();
-        }
-
-        return score;
-    }
-
-
-    /**
-     * Selects a random move from the list of possible moves.
-     *
-     * Chooses a move using a variant of reservoir-sampling that works
-     * even without knowing the list length. It ensures each element
-     * has an equal chance of being chosen.
-     *
-     * @param game      Game state
-     * @return          Chosen move
-     */
-    private int getRandomMove(Game game) {
-        int count = 0;
-        int move = Game.NULL_MOVE;
-        int choice = Game.NULL_MOVE;
-
-        while ((move = game.nextMove()) != Game.NULL_MOVE) {
-            if (random.nextInt(++count) == 0) {
-                choice = move;
-            }
-        }
-
-        return choice;
+        return scorer.evaluate(game, maxDepth);
     }
 }
