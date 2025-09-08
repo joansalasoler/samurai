@@ -152,24 +152,18 @@ public interface BoardContract {
     }
 
 
-    @Test
-    @DisplayName("board hash matches game hash for equivalent states")
-    default void BoardHashMatchesGameHash() {
-        Board board = newBoard();
-        Game game = newGame();
-        game.setStartingBoard(board);
-        assertEquals(board.hash(), game.hash());
-    }
-
-
     @ParameterizedTest()
     @MethodSource("suites")
-    @DisplayName("board hash matches game hash for suite positions")
-    default void BoardHashMatchesGameHashForSuites(Suite suite) {
+    @DisplayName("board state matches game state for suite positions")
+    default void BoardStateMatchesGameStateForSuites(Suite suite) {
         Board instance = newBoard();
         Board board = instance.fromDiagram(suite.diagram());
         Game game = newGame();
         game.setStartingBoard(board);
+        Board current = game.getCurrentBoard();
+        assertEquals(board.turn(), game.turn());
+        assertEquals(current.turn(), game.turn());
         assertEquals(board.hash(), game.hash());
+        assertEquals(current.hash(), game.hash());
     }
 }
