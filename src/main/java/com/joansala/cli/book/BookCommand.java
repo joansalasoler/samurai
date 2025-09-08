@@ -32,6 +32,7 @@ import picocli.CommandLine.*;
       DumpCommand.class,
       QueryCommand.class,
       ExportCommand.class,
+      SymmetrizeCommand.class,
       TrainCommand.class,
   }
 )

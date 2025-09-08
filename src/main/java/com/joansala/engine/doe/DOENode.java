@@ -1,7 +1,7 @@
 package com.joansala.engine.doe;
 
 /*
- * Copyright (C) 2021-2024 Joan Sala Soler <contact@joansala.com>
+ * Copyright (C) 2021-2025 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,16 @@ public class DOENode implements Comparable<DOENode>, Serializable {
      */
     public boolean isEvaluated() {
         return evaluated;
+    }
+
+
+    /**
+     * Checks if this node is an endgame position.
+     *
+     * @return      If this node is flagged as terminal
+     */
+    public boolean isTerminal() {
+        return terminal;
     }
 
 

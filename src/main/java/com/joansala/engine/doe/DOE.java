@@ -1,7 +1,7 @@
 package com.joansala.engine.doe;
 
 /*
- * Copyright (C) 2021-2024 Joan Sala Soler <contact@joansala.com>
+ * Copyright (C) 2021-2025 Joan Sala Soler <contact@joansala.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,10 @@ public class DOE extends BaseEngine {
         // before all tasks were completed. Enqueue them now.
 
         for (DOENode node : store.values()) {
+            if (aborted()) {
+                break;
+            }
+
             if (node.evaluated == false) {
                 executor.submit(() -> evaluate(node, scorer));
                 counter++;
@@ -378,7 +382,7 @@ public class DOE extends BaseEngine {
     private DOENode appendChild(DOENode parent, int move) {
         final DOENode node = new DOENode(game, move);
 
-        if (node.terminal) {
+        if (node.isTerminal()) {
             node.evaluated = true;
             node.updateScore(outcome(node));
         }
@@ -424,7 +428,7 @@ public class DOE extends BaseEngine {
     private DOENode[] expand(DOENode node, int depth) {
         DOENode[] selected = { node };
 
-        if (node.terminal || depth == 0) {
+        if (node.isTerminal() || depth == 0) {
             return selected;
         }
 
