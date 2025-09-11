@@ -34,6 +34,11 @@ import static com.joansala.engine.Game.*;
 
 /**
  * UCT opening book implementation.
+ *
+ * This implementation uses confidence bounds to make safe move choices,
+ * assuming the opponent will achieve their best possible outcome (UCB).
+ * Making it suitable for conservative play where we want to avoid risky
+ * moves even if they might have high average payoffs.
  */
 public class UCTRoots implements Closeable, Roots<Game> {
 
@@ -97,11 +102,15 @@ public class UCTRoots implements Closeable, Roots<Game> {
 
 
     /**
-     * Compute the selection score of a node. This method returns an
-     * upper confidence bound on the score of the entry.
+     * Compute the selection score of a node.
      *
-     * @param node      A node
-     * @return          Score of the node
+     * This method returns the negated Upper Confidence Bound (UCB) of
+     * the opponent's score, representing the worst-case scenario from
+     * the player to move perspective. Higher values indicate safer moves
+     * where even the pessimistic outcome is acceptable.
+     *
+     * @param entry     Book entry
+     * @return          Selection score
      */
     public double selectionScore(BookEntry entry) {
         final double bound = maxScore / Math.sqrt(entry.getCount());
