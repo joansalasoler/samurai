@@ -31,11 +31,14 @@ import static com.joansala.engine.Game.*;
  */
 public class RandomRoots implements Roots<Game> {
 
-    /** Minimum allowed heuristic score in centipawns */
-    private static final int MIN_CENTIPAWNS = -150;
-
     /** Random number generator */
     private final Random random = new Random();
+
+    /** Maximum variation length */
+    private int maxLength = 10;
+
+    /** Minimum allowed heuristic score */
+    private int threshold = -150;
 
     /** If no more book moves can be found */
     private boolean outOfBook = false;
@@ -51,10 +54,35 @@ public class RandomRoots implements Roots<Game> {
 
 
     /**
+     * Sets the maximum variation length.
+     *
+     * @param length    Maximum length
+     */
+    public void setMaxLength(int length) {
+        maxLength = length;
+    }
+
+
+    /**
+     * Minimum score a move must have to be playable.
+     *
+     * @param score     Threshold score
+     */
+    public void setThreshold(int score) {
+        threshold = score;
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public int pickBestMove(Game game) throws IOException {
+        if (game.length() >= maxLength) {
+            outOfBook = true;
+            return NULL_MOVE;
+        }
+
         if (outOfBook == false) {
             List<Integer> moves = moveChoices(game);
 
@@ -98,15 +126,15 @@ public class RandomRoots implements Roots<Game> {
         List<Integer> choices = new LinkedList<>();
         int[] moves = game.legalMoves();
         int cursor = game.getCursor();
+        int turn = game.turn();
 
         game.ensureCapacity(1 + game.length());
 
         for (int move : moves) {
             game.makeMove(move);
-            int score = game.score();
-            int centis = game.toCentiPawns(score);
+            int score = turn * game.score();
 
-            if (centis >= MIN_CENTIPAWNS) {
+            if (score >= threshold) {
                 choices.add(move);
             }
 
