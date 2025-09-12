@@ -152,18 +152,25 @@ public class TrainCommand implements Callable<Integer> {
         // Evaluate positions as they arrive
 
         trainer.train(nodeSize, rootGame, (moves) -> {
+            Evaluator evaluator = null;
+
             try {
-                Evaluator evaluator = evaluators.take();
+                evaluator = evaluators.take();
                 final double score = evaluator.computeScore(moves);
                 final long count = store.count();
 
                 String result = formatResult(moves, (int) score, count);
                 System.out.format("- %s%n", result);
 
-                evaluators.put(evaluator);
                 return score;
             } catch (Exception e) {
                 throw new IllegalStateException(e);
+            } finally {
+                try {
+                    evaluators.put(evaluator);
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
             }
         });
 
@@ -290,6 +297,12 @@ public class TrainCommand implements Callable<Integer> {
         /** DOE store reference */
         private DOEStore store;
 
+        /** Engine instance */
+        private Engine engine;
+
+        /** Game instance */
+        private Game game;
+
 
         /**
          * Creates a new evaluator instance.
@@ -297,6 +310,8 @@ public class TrainCommand implements Callable<Integer> {
          * @param store     Store to lookup symmetric positions
          */
         protected Evaluator(DOEStore store) {
+            this.game = getNewGameInstance();
+            this.engine = getNewEngineInstance();
             this.store = store;
         }
 
@@ -308,10 +323,9 @@ public class TrainCommand implements Callable<Integer> {
          * @return          The computed score for the resulting position
          */
         protected double computeScore(int[] moves) {
-            Game game = getNewGameInstance();
-
             // Replay the provided variation
 
+            game.newMatch();
             game.setStartingBoard(rootBoard);
             game.ensureCapacity(moves.length);
 
@@ -330,7 +344,7 @@ public class TrainCommand implements Callable<Integer> {
 
             // No symmetry found, compute new score
 
-            Engine engine = getNewEngineInstance();
+            engine.newMatch();
             int score = engine.computeBestScore(game);
 
             return score;

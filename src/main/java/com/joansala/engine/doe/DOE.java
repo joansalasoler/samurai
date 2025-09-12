@@ -342,12 +342,16 @@ public class DOE extends BaseEngine {
      * @param scorer    Evaluation function
      */
     private void evaluate(DOENode node, DOEScorer scorer) {
-        double score = scorer.apply(node.moves);
+        try {
+            double score = scorer.apply(node.moves);
 
-        synchronized (lock) {
-            node.evaluated = true;
-            updateWaitCount(node, -WAIT_PENALTY);
-            backpropagate(node, score);
+            synchronized (lock) {
+                node.evaluated = true;
+                updateWaitCount(node, -WAIT_PENALTY);
+                backpropagate(node, score);
+            }
+        } catch (Exception e) {
+            // Ignore evaluation on error
         }
     }
 
